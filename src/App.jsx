@@ -4,6 +4,7 @@ import LayoutMain from "./layouts/LayoutMain";
 import Dashboard from "./pages/Dashboard";
 import Construction from "./pages/Construction";
 import NotFound from "./pages/NotFound";
+import Cash from "./pages/Cash";
 
 function App() {
   return (
@@ -11,7 +12,7 @@ function App() {
       <Routes>
         <Route element={<LayoutMain />}>
           <Route index element={<Dashboard />} />
-          <Route path="cash" element={<Construction />} />
+          <Route path="cash" element={<Cash />} />
           <Route path="etf" element={<Construction />} />
           <Route path="stocks" element={<Construction />} />
           <Route path="managed-funds" element={<Construction />} />

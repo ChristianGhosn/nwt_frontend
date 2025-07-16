@@ -16,9 +16,11 @@ const Table = ({ tableHeading, headings, keys, data }) => {
 
         <tbody className="divide-y divide-gray-300">
           {data.map((item, rowIndex) => {
-            const isTotalRow =
-              typeof item.category === "string" &&
-              item.category.toLowerCase().includes("total");
+            const isTotalRow = Object.values(item).some(
+              (value) =>
+                typeof value === "string" &&
+                value.toLowerCase().includes("total")
+            );
 
             return (
               <tr
