@@ -29,7 +29,7 @@ const Cash = () => {
   });
   return (
     <div className="w-full">
-      <h1 className="text-3xl font-semibold">{data.Cash.tableHeading}</h1>
+      <h1 className="text-3xl font-semibold">Cash</h1>
       <Table
         tableHeading={data.Cash.tableHeading}
         data={data.Cash.data}
