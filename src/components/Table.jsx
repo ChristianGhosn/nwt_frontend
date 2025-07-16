@@ -1,12 +1,11 @@
-import { useState } from "react";
-
 const Table = ({ tableHeading, headings, keys, data }) => {
   return (
     <div className="mt-4 overflow-x-auto w-full">
       <h2 className="text-lg font-semibold mb-2">{tableHeading}</h2>
-      <table className="w-full text-left text-sm text-gray-900">
-        <thead className="border-b border-gray-200 text-xs font-semibold uppercase text-gray-500">
-          <tr className="border-b border-gray-200">
+
+      <table className="w-full text-left text-sm rounded-md shadow-sm">
+        <thead className="border-b border-gray-300 text-xs font-semibold uppercase ">
+          <tr>
             {headings.map((heading, index) => (
               <th key={index} className="px-4 py-2">
                 {heading}
@@ -14,7 +13,8 @@ const Table = ({ tableHeading, headings, keys, data }) => {
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200">
+
+        <tbody className="divide-y divide-gray-300">
           {data.map((item, rowIndex) => {
             const isTotalRow =
               typeof item.category === "string" &&
@@ -23,11 +23,7 @@ const Table = ({ tableHeading, headings, keys, data }) => {
             return (
               <tr
                 key={rowIndex}
-                className={`${
-                  isTotalRow
-                    ? "bg-gray-100 font-semibold text-gray-800"
-                    : "hover:bg-gray-50"
-                }`}
+                className={`${isTotalRow ? "font-bold dark:bg-gray-600" : ""}`}
               >
                 {keys.map((key, cellIndex) => {
                   const value = item[key];
@@ -38,7 +34,7 @@ const Table = ({ tableHeading, headings, keys, data }) => {
                     <td
                       key={cellIndex}
                       className={`px-4 py-3 ${
-                        cellIndex === 0 ? "font-medium" : "text-gray-500"
+                        cellIndex === 0 ? "font-medium" : ""
                       }`}
                     >
                       {displayValue}

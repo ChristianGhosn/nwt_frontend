@@ -1,0 +1,168 @@
+import { useTheme } from "../hooks/useTheme";
+
+import { Link, Outlet, useLocation } from "react-router";
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Switch,
+} from "@headlessui/react";
+import {
+  House,
+  CircleDollarSign,
+  FileChartColumnIncreasing,
+  ChartCandlestick,
+  Coins,
+  HandCoins,
+  Bitcoin,
+  Weight,
+  Flame,
+  Sprout,
+  ChartPie,
+  Settings,
+  ChevronDown,
+} from "lucide-react";
+
+const LayoutMain = () => {
+  const [enabled, setEnabled] = useTheme();
+  const location = useLocation();
+  const isActive = (path) => location.pathname === path;
+  const links = [
+    {
+      to: "/",
+      label: "Dashboard",
+      icon: <House size={20} strokeWidth={1.75} />,
+    },
+    {
+      to: "/cash",
+      label: "Cash",
+      icon: <CircleDollarSign size={20} strokeWidth={1.75} />,
+    },
+    {
+      to: "/etf",
+      label: "ETFs",
+      icon: <FileChartColumnIncreasing size={20} strokeWidth={1.75} />,
+    },
+    {
+      to: "/stocks",
+      label: "Stocks",
+      icon: <ChartCandlestick size={20} strokeWidth={1.75} />,
+    },
+    {
+      to: "/managed-funds",
+      label: "Managed Funds",
+      icon: <Coins size={20} strokeWidth={1.75} />,
+    },
+    {
+      to: "/crypto",
+      label: "Crypto",
+      icon: <Bitcoin size={20} strokeWidth={1.75} />,
+    },
+    {
+      to: "/dividends",
+      label: "Dividends",
+      icon: <HandCoins size={20} strokeWidth={1.75} />,
+    },
+    {
+      to: "/liabilities",
+      label: "Liabilities",
+      icon: <Weight size={20} strokeWidth={1.75} />,
+    },
+    {
+      to: "/fire",
+      label: "FIRE",
+      icon: <Flame size={20} strokeWidth={1.75} />,
+    },
+    {
+      to: "/super",
+      label: "Superannuation",
+      icon: <Sprout size={20} strokeWidth={1.75} />,
+    },
+    {
+      to: "/budget",
+      label: "Budget",
+      icon: <ChartPie size={20} strokeWidth={1.75} />,
+    },
+  ];
+
+  return (
+    <>
+      {/* Fixed Sidebar */}
+      <nav className="fixed top-0 left-0 w-[256px] h-dvh bg-gray-800 text-white flex flex-col">
+        <div className="w-full h-full bg-gray-800 text-white flex flex-col px-4">
+          <div className="text-xl font-bold mt-4">Plexus</div>
+          <ul className="mt-6 space-y-1 w-full">
+            {links.map((link) => (
+              <li key={link.to} className="w-full">
+                <Link to={link.to}>
+                  <div
+                    className={`${
+                      isActive(link.to) ? "bg-gray-700" : ""
+                    } text-white hover:text-gray-300 hover:bg-gray-700 w-full py-2 px-4 rounded-xl flex items-center gap-2`}
+                  >
+                    {link.icon}
+                    <p>{link.label}</p>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-auto mb-6 text-center text-white hover:text-gray-300 hover:bg-gray-700 w-full py-2 px-4 rounded-xl ">
+            <Link
+              to="/settings"
+              className="flex items-center justify-start gap-2"
+            >
+              <Settings size={20} strokeWidth={1.75} />
+              <p>Settings</p>
+            </Link>
+          </div>
+        </div>
+      </nav>
+
+      <header className="ml-[256px] px-6 py-2 border-b border-gray-200 transition-colors duration-300 bg-white dark:bg-gray-900 dark:text-gray-100 dark:border-white">
+        <div className="flex items-center justify-end">
+          <Menu>
+            <MenuButton className="flex items-center gap-2 space-x-2 rounded-xl px-3 py-1.5 shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-300 data-open:bg-gray-300 dark:data-hover:bg-gray-800 dark:data-open:bg-gray-800">
+              <img
+                src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-4.0.3&ixid=&auto=format&fit=crop&w=64&q=80"
+                alt="User avatar"
+                className="h-8 w-8 rounded-full"
+              />
+              <span className="text-sm font-medium">Tom Cook</span>
+              <ChevronDown size={16} strokeWidth={1.75} />
+            </MenuButton>
+            <MenuItems
+              transition
+              anchor="bottom end"
+              className="w-48 origin-top-right rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-1 transition duration-100 ease-out [--anchor-gap:--spacing(1)] focus:outline-none data-closed:scale-95 data-closed:opacity-0"
+            >
+              <MenuItem>
+                <div className="flex items-center justify-between p-2">
+                  <p className="dark:text-gray-100">Display Mode</p>
+                  <Switch
+                    checked={enabled}
+                    onChange={setEnabled}
+                    className="group relative flex h-7 w-14 cursor-pointer rounded-full bg-gray-200 p-1 ease-in-out focus:not-data-focus:outline-none data-checked:bg-gray-800 data-focus:outline data-focus:outline-white"
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none inline-block size-5 translate-x-0 rounded-full bg-white dark:bg-gray-400 shadow-lg ring-0 transition duration-200 ease-in-out group-data-checked:translate-x-7"
+                    />
+                  </Switch>
+                </div>
+              </MenuItem>
+            </MenuItems>
+          </Menu>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="ml-[256px] h-screen overflow-auto p-6 transition-colors duration-300 bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+        <Outlet />
+      </main>
+    </>
+  );
+};
+
+export default LayoutMain;

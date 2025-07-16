@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router";
 import "./App.css";
-import Sidebar from "./layouts/Sidebar";
+import LayoutMain from "./layouts/LayoutMain";
 import Dashboard from "./pages/Dashboard";
 import Construction from "./pages/Construction";
 import NotFound from "./pages/NotFound";
@@ -9,10 +9,19 @@ function App() {
   return (
     <>
       <Routes>
-        <Route element={<Sidebar />}>
+        <Route element={<LayoutMain />}>
           <Route index element={<Dashboard />} />
           <Route path="cash" element={<Construction />} />
           <Route path="etf" element={<Construction />} />
+          <Route path="stocks" element={<Construction />} />
+          <Route path="managed-funds" element={<Construction />} />
+          <Route path="crypto" element={<Construction />} />
+          <Route path="dividends" element={<Construction />} />
+          <Route path="liabilities" element={<Construction />} />
+          <Route path="fire" element={<Construction />} />
+          <Route path="super" element={<Construction />} />
+          <Route path="budget" element={<Construction />} />
+          <Route path="settings" element={<Construction />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         {/* Add more routes as needed */}
