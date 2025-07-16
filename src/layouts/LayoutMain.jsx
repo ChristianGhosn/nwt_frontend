@@ -120,7 +120,7 @@ const LayoutMain = () => {
         </div>
       </nav>
 
-      <header className="ml-[256px] px-6 py-2 border-b border-gray-200 transition-colors duration-300 bg-white dark:bg-gray-900 dark:text-gray-100 dark:border-white">
+      <header className="fixed top-0 left-[256px] right-0 z-10 px-6 py-2 border-b border-gray-200 transition-colors duration-300 bg-white dark:bg-gray-900 dark:text-gray-100 dark:border-white">
         <div className="flex items-center justify-end">
           <Menu>
             <MenuButton className="flex items-center gap-2 space-x-2 rounded-xl px-3 py-1.5 shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-300 data-open:bg-gray-300 dark:data-hover:bg-gray-800 dark:data-open:bg-gray-800">
@@ -158,7 +158,7 @@ const LayoutMain = () => {
       </header>
 
       {/* Main Content */}
-      <main className="ml-[256px] h-screen overflow-auto p-6 transition-colors duration-300 bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+      <main className="ml-[256px] pt-[74px] h-screen overflow-auto p-6 transition-colors duration-300 bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100">
         <Outlet />
       </main>
     </>
