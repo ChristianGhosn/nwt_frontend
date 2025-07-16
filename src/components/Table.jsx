@@ -23,7 +23,9 @@ const Table = ({ tableHeading, headings, keys, data }) => {
             return (
               <tr
                 key={rowIndex}
-                className={`${isTotalRow ? "font-bold dark:bg-gray-600" : ""}`}
+                className={`${
+                  isTotalRow ? "font-bold dark:bg-gray-600 bg-gray-100" : ""
+                }`}
               >
                 {keys.map((key, cellIndex) => {
                   const value = item[key];
