@@ -1,5 +1,6 @@
 import { useTheme } from "../hooks/useTheme";
 
+import { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router";
 import {
   Menu,
@@ -22,10 +23,14 @@ import {
   ChartPie,
   Settings,
   ChevronDown,
+  Menu as HamburgerMenu,
 } from "lucide-react";
 
 const LayoutMain = () => {
   const [enabled, setEnabled] = useTheme();
+
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const location = useLocation();
   const isActive = (path) => location.pathname === path;
   const links = [
@@ -88,14 +93,40 @@ const LayoutMain = () => {
 
   return (
     <>
-      {/* Fixed Sidebar */}
-      <nav className="fixed top-0 left-0 w-[256px] h-dvh bg-gray-800 text-white flex flex-col">
+      {/* Sidebar Overlay for Mobile */}
+      <div
+        className={`fixed inset-0 z-40 bg-black/50 transition-opacity md:hidden ${
+          sidebarOpen ? "block" : "hidden"
+        }`}
+        onClick={() => setSidebarOpen(false)} // Clicking outside closes sidebar
+      />
+
+      {/* Sidebar */}
+      <nav
+        className={`
+    fixed top-0 left-0 z-50 h-dvh bg-gray-800 text-white flex flex-col transition-transform
+    w-[256px]
+    ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} 
+    md:translate-x-0 md:fixed md:block
+  `}
+      >
         <div className="w-full h-full bg-gray-800 text-white flex flex-col px-4">
-          <div className="text-xl font-bold mt-4">Plexus</div>
+          {/* Close button on mobile */}
+          <div className="flex justify-between items-center mt-4 md:hidden">
+            <div className="text-xl font-bold">Plexus</div>
+            <button
+              className="text-white text-2xl"
+              onClick={() => setSidebarOpen(false)}
+            >
+              ×
+            </button>
+          </div>
+
+          {/* Sidebar links */}
           <ul className="mt-6 space-y-1 w-full">
             {links.map((link) => (
               <li key={link.to} className="w-full">
-                <Link to={link.to}>
+                <Link to={link.to} onClick={() => setSidebarOpen(false)}>
                   <div
                     className={`${
                       isActive(link.to) ? "bg-gray-700" : ""
@@ -108,9 +139,11 @@ const LayoutMain = () => {
               </li>
             ))}
           </ul>
-          <div className="mt-auto mb-6 text-center text-white hover:text-gray-300 hover:bg-gray-700 w-full py-2 px-4 rounded-xl ">
+
+          <div className="mt-auto mb-6 text-center text-white hover:text-gray-300 hover:bg-gray-700 w-full py-2 px-4 rounded-xl">
             <Link
               to="/settings"
+              onClick={() => setSidebarOpen(false)}
               className="flex items-center justify-start gap-2"
             >
               <Settings size={20} strokeWidth={1.75} />
@@ -120,8 +153,14 @@ const LayoutMain = () => {
         </div>
       </nav>
 
-      <header className="fixed top-0 left-[256px] right-0 z-10 px-6 py-2 border-b border-gray-200 transition-colors duration-300 bg-white dark:bg-gray-900 dark:text-gray-100 dark:border-white">
-        <div className="flex items-center justify-end">
+      {/* Fixed Header */}
+      <header className="fixed top-0 left-0 md:left-[256px] right-0 z-10 px-6 py-2 border-b border-gray-200 transition-colors duration-300 bg-white dark:bg-gray-900 dark:text-gray-100 dark:border-white">
+        <div className="flex items-center justify-between md:justify-end">
+          <HamburgerMenu
+            strokeWidth={1.5}
+            className="md:hidden cursor-pointer"
+            onClick={() => setSidebarOpen(true)}
+          />
           <Menu>
             <MenuButton className="flex items-center gap-2 space-x-2 rounded-xl px-3 py-1.5 shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-300 data-open:bg-gray-300 dark:data-hover:bg-gray-800 dark:data-open:bg-gray-800">
               <img
@@ -158,7 +197,7 @@ const LayoutMain = () => {
       </header>
 
       {/* Main Content */}
-      <main className="ml-[256px] pt-[74px] h-screen overflow-auto p-6 transition-colors duration-300 bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+      <main className="pt-[74px] h-screen overflow-auto p-6 transition-colors duration-300 bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 md:ml-[256px]">
         <Outlet />
       </main>
     </>
