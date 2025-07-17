@@ -1,4 +1,5 @@
 import { useTheme } from "../hooks/useTheme";
+import logo from "../assets/logo_no_name_transparent.png";
 
 import { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router";
@@ -24,6 +25,7 @@ import {
   Settings,
   ChevronDown,
   Menu as HamburgerMenu,
+  X,
 } from "lucide-react";
 
 const LayoutMain = () => {
@@ -111,6 +113,12 @@ const LayoutMain = () => {
   `}
       >
         <div className="w-full h-full bg-gray-800 text-white flex flex-col px-4">
+          {/* Logo on md and up */}
+          <div className="hidden md:flex items-center justify-center mt-6 mb-4">
+            <img src={logo} alt="App Logo" className="h-10 w-10 mr-2" />
+            <span className="text-xl font-bold">Plexus</span>
+          </div>
+
           {/* Close button on mobile */}
           <div className="flex justify-between items-center mt-4 md:hidden">
             <div className="text-xl font-bold">Plexus</div>
@@ -118,7 +126,7 @@ const LayoutMain = () => {
               className="text-white text-2xl"
               onClick={() => setSidebarOpen(false)}
             >
-              ×
+              <X strokeWidth={1.5} />
             </button>
           </div>
 
