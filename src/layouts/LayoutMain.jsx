@@ -1,6 +1,7 @@
 import { useTheme } from "../hooks/useTheme";
 import logo from "../assets/logo_no_name_transparent.png";
 
+import { useAuth0 } from "@auth0/auth0-react";
 import { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router";
 import {
@@ -29,6 +30,8 @@ import {
 } from "lucide-react";
 
 const LayoutMain = () => {
+  const { loginWithRedirect, user, isAuthenticated, logout, isLoading } =
+    useAuth0();
   const [enabled, setEnabled] = useTheme();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -169,38 +172,51 @@ const LayoutMain = () => {
             className="md:hidden cursor-pointer"
             onClick={() => setSidebarOpen(true)}
           />
-          <Menu>
-            <MenuButton className="flex items-center gap-2 space-x-2 rounded-xl px-3 py-1.5 shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-300 data-open:bg-gray-300 dark:data-hover:bg-gray-800 dark:data-open:bg-gray-800">
-              <img
-                src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-4.0.3&ixid=&auto=format&fit=crop&w=64&q=80"
-                alt="User avatar"
-                className="h-8 w-8 rounded-full"
-              />
-              <span className="text-sm font-medium">Tom Cook</span>
-              <ChevronDown size={16} strokeWidth={1.75} />
-            </MenuButton>
-            <MenuItems
-              transition
-              anchor="bottom end"
-              className="z-50 w-48 origin-top-right rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-1 transition duration-100 ease-out [--anchor-gap:--spacing(1)] focus:outline-none data-closed:scale-95 data-closed:opacity-0"
+          {!isAuthenticated && !isLoading ? (
+            <button
+              className="px-4 py-1.5 dark:bg-gray-800 dark:text-gray-100 bg-gray-200 text-gray-900 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors duration-200"
+              onClick={() => loginWithRedirect()}
             >
-              <MenuItem>
-                <div className="flex items-center justify-between p-2">
-                  <p className="dark:text-gray-100">Display Mode</p>
-                  <Switch
-                    checked={enabled}
-                    onChange={setEnabled}
-                    className="group relative flex h-7 w-14 cursor-pointer rounded-full bg-gray-200 p-1 ease-in-out focus:not-data-focus:outline-none data-checked:bg-gray-800 data-focus:outline data-focus:outline-white"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="pointer-events-none inline-block size-5 translate-x-0 rounded-full bg-white dark:bg-gray-400 shadow-lg ring-0 transition duration-200 ease-in-out group-data-checked:translate-x-7"
-                    />
-                  </Switch>
-                </div>
-              </MenuItem>
-            </MenuItems>
-          </Menu>
+              Login
+            </button>
+          ) : (
+            <Menu>
+              <MenuButton className="flex items-center gap-2 space-x-2 rounded-xl px-3 py-1.5 shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-300 data-open:bg-gray-300 dark:data-hover:bg-gray-800 dark:data-open:bg-gray-800">
+                <img
+                  src={user?.picture}
+                  alt="User avatar"
+                  className="h-8 w-8 rounded-full"
+                />
+                <span className="text-sm font-medium">{user?.name}</span>
+                <ChevronDown size={16} strokeWidth={1.75} />
+              </MenuButton>
+              <MenuItems
+                transition
+                anchor="bottom end"
+                className="z-50 w-48 origin-top-right rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-1 transition duration-100 ease-out [--anchor-gap:--spacing(1)] focus:outline-none data-closed:scale-95 data-closed:opacity-0"
+              >
+                <MenuItem>
+                  <div className="flex items-center justify-between p-2">
+                    <p className="dark:text-gray-100">Display Mode</p>
+                    <Switch
+                      checked={enabled}
+                      onChange={setEnabled}
+                      className="group relative flex h-7 w-14 cursor-pointer rounded-full bg-gray-200 p-1 ease-in-out focus:not-data-focus:outline-none data-checked:bg-gray-800 data-focus:outline data-focus:outline-white"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="pointer-events-none inline-block size-5 translate-x-0 rounded-full bg-white dark:bg-gray-400 shadow-lg ring-0 transition duration-200 ease-in-out group-data-checked:translate-x-7"
+                      />
+                    </Switch>
+                  </div>
+                </MenuItem>
+
+                <MenuItem className="hover:bg-gray-200 rounded-lg dark:text-gray-100 dark:hover:bg-gray-800 w-full py-1 px-2 text-start">
+                  <button onClick={() => logout()}>Logout</button>
+                </MenuItem>
+              </MenuItems>
+            </Menu>
+          )}
         </div>
       </header>
 
