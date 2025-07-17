@@ -100,7 +100,7 @@ const LayoutMain = () => {
     <>
       {/* Sidebar Overlay for Mobile */}
       <div
-        className={`fixed inset-0 z-40 bg-black/50 transition-opacity md:hidden ${
+        className={`fixed inset-0 z-20 bg-black/50 transition-opacity md:hidden ${
           sidebarOpen ? "block" : "hidden"
         }`}
         onClick={() => setSidebarOpen(false)} // Clicking outside closes sidebar
@@ -109,7 +109,7 @@ const LayoutMain = () => {
       {/* Sidebar */}
       <nav
         className={`
-    fixed top-0 left-0 z-30 h-dvh bg-gray-800 text-white flex flex-col transition-transform
+    fixed top-0 left-0 z-50 h-dvh bg-gray-800 text-white flex flex-col transition-transform
     w-[256px]
     ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} 
     md:translate-x-0 md:fixed md:block
@@ -193,7 +193,7 @@ const LayoutMain = () => {
               <MenuItems
                 transition
                 anchor="bottom end"
-                className="z-50 w-48 origin-top-right rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-1 transition duration-100 ease-out [--anchor-gap:--spacing(1)] focus:outline-none data-closed:scale-95 data-closed:opacity-0"
+                className="z-30 w-48 origin-top-right rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-1 transition duration-100 ease-out [--anchor-gap:--spacing(1)] focus:outline-none data-closed:scale-95 data-closed:opacity-0"
               >
                 <MenuItem>
                   <div className="flex items-center justify-between p-2">
