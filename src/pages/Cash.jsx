@@ -9,21 +9,24 @@ const Cash = () => {
       keys: ["bank", "currency", "balance"],
       data: [
         {
+          id: 1,
           bank: "Cash Savings",
           currency: "USD",
           balance: 0.0,
         },
         {
+          id: 2,
           bank: "Emergency Fund",
           currency: "USD",
           balance: 0.0,
         },
         {
+          id: 3,
           bank: "Other Cash Holdings",
           currency: "USD",
           balance: 0.0,
         },
-        { bank: "Total Balance", currency: "USD", balance: 0.0 },
+        { id: 4, bank: "Total Balance", currency: "USD", balance: 0.0 },
       ],
     },
   });
@@ -32,9 +35,10 @@ const Cash = () => {
       <h1 className="text-3xl font-semibold">Cash</h1>
       <Table
         tableHeading={data.Cash.tableHeading}
-        data={data.Cash.data}
-        keys={data.Cash.keys}
         headings={data.Cash.headings}
+        keys={data.Cash.keys}
+        data={data.Cash.data}
+        editableColumnKey={"balance"}
       />
     </div>
   );
