@@ -181,7 +181,7 @@ const LayoutMain = () => {
             </button>
           ) : (
             <Menu>
-              <MenuButton className="flex items-center gap-2 space-x-2 rounded-xl px-3 py-1.5 shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-300 data-open:bg-gray-300 dark:data-hover:bg-gray-800 dark:data-open:bg-gray-800">
+              <MenuButton className="flex items-center gap-2 space-x-2 rounded-xl px-3 py-1.5 shadow-inner dark:shadow-white/10 shadow-black/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-300 data-open:bg-gray-300 dark:data-hover:bg-gray-800 dark:data-open:bg-gray-800">
                 <img
                   src={user?.picture}
                   alt="User avatar"

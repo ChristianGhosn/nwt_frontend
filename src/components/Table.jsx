@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import TableHeadings from "./table/TableHeadings";
 import TableBody from "./table/TableBody";
@@ -9,8 +9,13 @@ const Table = ({
   keys,
   data: initialData,
   editableColumnKey,
+  onUpdate,
 }) => {
   const [data, setData] = useState(initialData);
+
+  useEffect(() => {
+    setData(initialData);
+  }, [initialData]);
 
   const handleUpdate = (id, key, value) => {
     const updated = data.map((item) =>
@@ -28,7 +33,7 @@ const Table = ({
         <TableBody
           data={data}
           keys={keys}
-          onUpdate={handleUpdate}
+          onUpdate={onUpdate}
           editableColumnKey={editableColumnKey}
         />
       </table>

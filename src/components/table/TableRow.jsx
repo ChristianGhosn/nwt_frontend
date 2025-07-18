@@ -1,18 +1,25 @@
 import { useState } from "react";
-import { SquarePen, Save } from "lucide-react";
+import { SquarePen, Save, X } from "lucide-react";
 
 const TableRow = ({ item, keys, onUpdate, editableColumnKey }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedValue, setEditedValue] = useState(item[editableColumnKey]);
 
   const handleEditClick = () => {
-    if (!isTotalRow) setIsEditing(true);
+    if (!isTotalRow) {
+      setEditedValue(item[editableColumnKey]);
+      setIsEditing(true);
+    }
   };
 
   const handleSaveClick = () => {
     if (editedValue === "" || isNaN(editedValue)) return;
     setIsEditing(false);
-    onUpdate(item.id, editableColumnKey, parseFloat(editedValue));
+    onUpdate(item.$id, editableColumnKey, parseFloat(editedValue));
+  };
+
+  const handleCancelClick = () => {
+    setIsEditing(false);
   };
 
   const isTotalRow = Object.values(item).some(
@@ -29,7 +36,9 @@ const TableRow = ({ item, keys, onUpdate, editableColumnKey }) => {
       {keys.map((key, index) => {
         const value = item[key];
         const displayValue =
-          typeof value === "number" ? `$${value.toFixed(2)}` : value ?? "";
+          key === "balance" && typeof value === "number"
+            ? `$${value.toFixed(2)}`
+            : value ?? "";
 
         return (
           <td
@@ -57,12 +66,20 @@ const TableRow = ({ item, keys, onUpdate, editableColumnKey }) => {
       {editableColumnKey && (
         <td className="px-2 py-3 text-right align-middle w-1 whitespace-nowrap">
           {isTotalRow ? null : isEditing ? (
-            <button
-              className="hover:text-gray-600 dark:hover:text-gray-300"
-              onClick={handleSaveClick}
-            >
-              <Save size={16} strokeWidth={1.25} />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                className="hover:text-gray-600 dark:hover:text-gray-300"
+                onClick={handleSaveClick}
+              >
+                <Save size={16} strokeWidth={1.25} />
+              </button>
+              <button
+                className="hover:text-gray-600 dark:hover:text-gray-300"
+                onClick={handleCancelClick}
+              >
+                <X size={16} strokeWidth={1.25} />
+              </button>
+            </div>
           ) : (
             <button
               className="hover:text-gray-600 dark:hover:text-gray-300"
