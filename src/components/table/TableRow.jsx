@@ -71,13 +71,13 @@ const TableRow = ({ item, keys, onUpdate, editableColumnKey }) => {
                 className="hover:text-gray-600 dark:hover:text-gray-300"
                 onClick={handleSaveClick}
               >
-                <Save size={16} strokeWidth={1.25} />
+                <Save size={18} strokeWidth={1.25} />
               </button>
               <button
                 className="hover:text-gray-600 dark:hover:text-gray-300"
                 onClick={handleCancelClick}
               >
-                <X size={16} strokeWidth={1.25} />
+                <X size={18} strokeWidth={1.25} />
               </button>
             </div>
           ) : (
@@ -85,7 +85,7 @@ const TableRow = ({ item, keys, onUpdate, editableColumnKey }) => {
               className="hover:text-gray-600 dark:hover:text-gray-300"
               onClick={handleEditClick}
             >
-              <SquarePen size={16} strokeWidth={1.25} />
+              <SquarePen size={18} strokeWidth={1.25} />
             </button>
           )}
         </td>

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 import Table from "../components/Table";
 
 const Dashboard = () => {
@@ -91,6 +92,7 @@ const Dashboard = () => {
       ],
     },
   });
+
   return (
     <div className="w-full">
       <h1 className="text-3xl font-semibold">Dashboard</h1>
