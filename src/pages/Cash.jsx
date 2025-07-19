@@ -31,8 +31,8 @@ const Cash = () => {
       <h1 className="text-3xl font-semibold">Cash</h1>
       <div className="flex justify-end">
         <Button onClick={() => setIsOpen(true)}>
-          New Bank
-          <CirclePlus size={32} strokeWidth={1.75} />
+          <CirclePlus size={24} strokeWidth={1.75} />
+          Add Bank
         </Button>
       </div>
       <CashTable />
