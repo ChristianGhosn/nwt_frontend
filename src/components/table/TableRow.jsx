@@ -36,9 +36,7 @@ const TableRow = ({ item, keys, onUpdate, editableColumnKey }) => {
       {keys.map((key, index) => {
         const value = item[key];
         const displayValue =
-          key === "balance" && typeof value === "number"
-            ? `$${value.toFixed(2)}`
-            : value ?? "";
+          typeof value === "number" ? `$${value.toFixed(2)}` : value ?? "";
 
         return (
           <td
