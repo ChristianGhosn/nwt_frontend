@@ -1,9 +1,5 @@
-import {
-  createAsyncThunk,
-  createSlice,
-  createSelector,
-} from "@reduxjs/toolkit";
-import { fetchCashAPI, updateCashAPI } from "../../api/cash";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createCashAPI, fetchCashAPI, updateCashAPI } from "../../api/cash";
 
 export const fetchCashData = createAsyncThunk(
   "cash/fetchCashData",
@@ -23,12 +19,12 @@ export const updateCashData = createAsyncThunk(
   }
 );
 
-export const selectTotalCash = createSelector(
-  (state) => state.cash.data,
-  (data) => {
-    if (!Array.isArray(data)) return null;
-
-    return data.find((item) => item.bank === "Total Balance") || null;
+export const createCashData = createAsyncThunk(
+  "cash/createCashData",
+  async ({ data, ownerId }, { rejectWithValue }) => {
+    const res = await createCashAPI(data, ownerId);
+    if (!res.success) return rejectWithValue(res.message);
+    return res.data;
   }
 );
 
@@ -59,13 +55,50 @@ const cashSlice = createSlice({
         state.error = action.payload || "Unknown error";
       })
 
+      // Handle create cash data
+      .addCase(createCashData.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createCashData.fulfilled, (state, action) => {
+        state.entries.push(action.payload);
+        const newTotal = state.entries.reduce(
+          (acc, item) => acc + Number(item.balance || 0),
+          0
+        );
+        if (state.total) {
+          state.total.balance = Number(newTotal.toFixed(2));
+        }
+        state.loading = false;
+      })
+      .addCase(createCashData.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Unknown error";
+      })
+
       // Handle update cash data
       .addCase(updateCashData.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(updateCashData.fulfilled, (state, action) => {
-        state.data = action.payload;
+        const updatedItem = action.payload;
+        if (!state.entries || !Array.isArray(state.entries)) return;
+
+        const index = state.entries.findIndex(
+          (item) => item.$id === updatedItem.$id
+        );
+        if (index !== -1) {
+          state.entries[index] = updatedItem;
+        }
+        const newTotal = state.entries.reduce(
+          (acc, item) => acc + Number(item.balance || 0),
+          0
+        );
+        if (state.total) {
+          state.total.balance = Number(newTotal.toFixed(2));
+        }
+
         state.loading = false;
       })
       .addCase(updateCashData.rejected, (state, action) => {

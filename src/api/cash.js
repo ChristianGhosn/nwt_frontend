@@ -1,5 +1,5 @@
 // src/api/cash.js
-import { getCash, updateCash } from "../lib/appwrite";
+import { createCash, getCash, updateCash } from "../lib/appwrite";
 
 /**
  * Fetches cash data for a given owner and formats it
@@ -52,6 +52,25 @@ export const updateCashAPI = async (data, documentId, ownerId) => {
     return {
       success: false,
       message: error.message || "Update failed",
+    };
+  }
+};
+
+/**
+ * Creates cash data for a given owner, formats it, and returns the created data
+ * to match API-like structure.
+ */
+export const createCashAPI = async (data, ownerId) => {
+  try {
+    const created = await createCash({ ...data, ownerId });
+    return {
+      success: true,
+      data: created,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message || "Creation failed",
     };
   }
 };

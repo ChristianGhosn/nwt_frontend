@@ -1,9 +1,14 @@
+import { useDispatch } from "react-redux";
+import { useAuth0 } from "@auth0/auth0-react";
+
 import Table from "../Table";
 import { updateCashData } from "../../store/slices/cashSlice";
 import { useCashData } from "../../hooks/useCashData";
 
 const CashTable = () => {
   const { entries, total, loading, error } = useCashData();
+  const { user } = useAuth0();
+  const dispatch = useDispatch();
 
   const config = {
     tableHeading: "Cash Overview",

@@ -25,18 +25,34 @@ export const getCash = async (ownerId) => {
 
 export const updateCash = async (data, documentId, ownerId) => {
   try {
-    await databases.updateDocument(
+    const updated = await databases.updateDocument(
       import.meta.env.VITE_APPWRITE_DB_ID,
       import.meta.env.VITE_APPWRITE_CASH_COLLECTION_ID,
       documentId,
       data
     );
 
-    const updatedCashList = await getCash(ownerId);
+    // const updatedCashList = await getCash(ownerId);
 
-    return updatedCashList;
+    return updated;
   } catch (error) {
     console.error("Error updating cash:", error);
+    return null;
+  }
+};
+
+export const createCash = async (data) => {
+  try {
+    const response = await databases.createDocument(
+      import.meta.env.VITE_APPWRITE_DB_ID,
+      import.meta.env.VITE_APPWRITE_CASH_COLLECTION_ID,
+      ID.unique(),
+      data
+    );
+
+    return response;
+  } catch (error) {
+    console.error("Error creating cash:", error);
     return null;
   }
 };
