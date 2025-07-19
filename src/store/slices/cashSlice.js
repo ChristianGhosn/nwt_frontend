@@ -1,39 +1,42 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getCash, updateCash } from "../../lib/appwrite";
+import {
+  createAsyncThunk,
+  createSlice,
+  createSelector,
+} from "@reduxjs/toolkit";
+import { fetchCashAPI, updateCashAPI } from "../../api/cash";
 
 export const fetchCashData = createAsyncThunk(
   "cash/fetchCashData",
   async (ownerId, { rejectWithValue }) => {
-    try {
-      const data = await getCash(ownerId);
-      if (!data) throw new Error("No data returned from Appwrite");
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.message || "Failed to fetch cash data");
-    }
+    const res = await fetchCashAPI(ownerId);
+    if (!res.success) return rejectWithValue(res.message);
+    return res.data; // { entries, total }
   }
 );
 
 export const updateCashData = createAsyncThunk(
   "cash/updateCashData",
   async ({ data, documentId, ownerId }, { rejectWithValue }) => {
-    try {
-      const updatedData = await updateCash(data, documentId, ownerId);
-      if (!updatedData) throw new Error("Failed to update cash");
-      return updatedData;
-    } catch (err) {
-      return rejectWithValue(err.message || "Update failed");
-    }
+    const res = await updateCashAPI(data, documentId, ownerId);
+    if (!res.success) return rejectWithValue(res.message);
+    return res.data;
   }
 );
 
-export const selectTotalCash = (state) =>
-  state.cash.data.reduce((sum, item) => sum + parseFloat(item.balance || 0), 0);
+export const selectTotalCash = createSelector(
+  (state) => state.cash.data,
+  (data) => {
+    if (!Array.isArray(data)) return null;
+
+    return data.find((item) => item.bank === "Total Balance") || null;
+  }
+);
 
 const cashSlice = createSlice({
   name: "cash",
   initialState: {
-    data: [],
+    entries: [],
+    total: null,
     loading: false,
     error: null,
   },
@@ -46,7 +49,9 @@ const cashSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchCashData.fulfilled, (state, action) => {
-        state.data = action.payload;
+        const { entries, total } = action.payload;
+        state.entries = entries;
+        state.total = total;
         state.loading = false;
       })
       .addCase(fetchCashData.rejected, (state, action) => {

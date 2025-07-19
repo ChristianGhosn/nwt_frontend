@@ -7,13 +7,13 @@ import { fetchCashData } from "../store/slices/cashSlice";
 export const useCashData = () => {
   const dispatch = useDispatch();
   const { user } = useAuth0();
-  const { data: cashData, loading, error } = useSelector((state) => state.cash);
+  const { entries, total, loading, error } = useSelector((state) => state.cash);
 
   useEffect(() => {
-    if (user?.sub && cashData.length === 0 && !loading) {
+    if (user?.sub && entries.length === 0 && !loading) {
       dispatch(fetchCashData(user.sub));
     }
-  }, [dispatch, user, cashData, loading]);
+  }, [dispatch, user, entries, loading]);
 
-  return { cashData, loading, error };
+  return { entries, total, loading, error };
 };

@@ -16,19 +16,6 @@ export const getCash = async (ownerId) => {
       [Query.equal("ownerId", ownerId)]
     );
 
-    const totalBalance = response.documents.reduce(
-      (acc, doc) => acc + parseFloat(doc.balance || 0),
-      0
-    );
-
-    const total = {
-      balance: Number(totalBalance.toFixed(2)),
-      currency: "AUD",
-      bank: "Total Balance",
-      $id: 0,
-    };
-    response.documents.push(total);
-
     return response.documents;
   } catch (error) {
     console.error("Error fetching cash:", error);

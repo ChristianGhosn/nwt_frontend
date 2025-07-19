@@ -68,13 +68,13 @@ const TableRow = ({ item, keys, onUpdate, editableColumnKey }) => {
           {isTotalRow ? null : isEditing ? (
             <div className="flex items-center gap-2">
               <button
-                className="hover:text-gray-600 dark:hover:text-gray-300"
+                className="hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer"
                 onClick={handleSaveClick}
               >
                 <Save size={18} strokeWidth={1.25} />
               </button>
               <button
-                className="hover:text-gray-600 dark:hover:text-gray-300"
+                className="hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer"
                 onClick={handleCancelClick}
               >
                 <X size={18} strokeWidth={1.25} />
@@ -82,7 +82,7 @@ const TableRow = ({ item, keys, onUpdate, editableColumnKey }) => {
             </div>
           ) : (
             <button
-              className="hover:text-gray-600 dark:hover:text-gray-300"
+              className="hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer"
               onClick={handleEditClick}
             >
               <SquarePen size={18} strokeWidth={1.25} />

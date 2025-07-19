@@ -17,13 +17,6 @@ const Table = ({
     setData(initialData);
   }, [initialData]);
 
-  const handleUpdate = (id, key, value) => {
-    const updated = data.map((item) =>
-      item.id === id ? { ...item, [key]: value } : item
-    );
-    setData(updated);
-  };
-
   return (
     <div className="mt-4 overflow-x-auto w-full">
       <h2 className="text-lg font-semibold mb-2">{tableHeading}</h2>
