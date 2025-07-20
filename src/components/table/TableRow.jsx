@@ -49,7 +49,7 @@ const TableRow = ({ item, keys, onUpdate, onDelete, editableColumnKey }) => {
         return (
           <td
             key={index}
-            className={`px-4 py-3 ${index === 0 ? "font-medium" : ""}`}
+            className={`px-4 py-3 ${isTotalRow ? "font-semibold" : ""}`}
           >
             {isEditing && key === editableColumnKey ? (
               <input
