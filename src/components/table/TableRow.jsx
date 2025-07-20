@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { SquarePen, Save, X } from "lucide-react";
 
-const TableRow = ({ item, keys, onUpdate, editableColumnKey }) => {
+const TableRow = ({ item, keys, onUpdate, onDelete, editableColumnKey }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedValue, setEditedValue] = useState(item[editableColumnKey]);
 
@@ -9,6 +9,12 @@ const TableRow = ({ item, keys, onUpdate, editableColumnKey }) => {
     if (!isTotalRow) {
       setEditedValue(item[editableColumnKey]);
       setIsEditing(true);
+    }
+  };
+
+  const handleDeleteClick = () => {
+    if (onDelete && typeof onDelete === "function") {
+      onDelete(item.$id);
     }
   };
 
@@ -22,10 +28,12 @@ const TableRow = ({ item, keys, onUpdate, editableColumnKey }) => {
     setIsEditing(false);
   };
 
-  const isTotalRow = Object.values(item).some(
-    (value) =>
-      typeof value === "string" && value.toLowerCase().includes("total")
-  );
+  const isTotalRow =
+    item.$id === 0 &&
+    Object.values(item).some(
+      (value) =>
+        typeof value === "string" && value.toLowerCase().includes("total")
+    );
 
   return (
     <tr
@@ -79,12 +87,20 @@ const TableRow = ({ item, keys, onUpdate, editableColumnKey }) => {
               </button>
             </div>
           ) : (
-            <button
-              className="hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer"
-              onClick={handleEditClick}
-            >
-              <SquarePen size={18} strokeWidth={1.25} />
-            </button>
+            <div className="flex items-center justify-end gap-2">
+              <button
+                className="hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer"
+                onClick={handleEditClick}
+              >
+                <SquarePen size={18} strokeWidth={1.25} />
+              </button>
+              <button
+                className="hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer"
+                onClick={handleDeleteClick}
+              >
+                <X size={18} strokeWidth={1.25} />
+              </button>
+            </div>
           )}
         </td>
       )}

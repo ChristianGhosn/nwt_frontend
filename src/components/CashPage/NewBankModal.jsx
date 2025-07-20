@@ -25,6 +25,11 @@ const NewBankModal = ({ isOpen, onClose, onSubmit }) => {
     onClose();
   };
 
+  const handleCancel = () => {
+    setFormData({ bank: "", balance: 0, currency: "AUD" });
+    onClose();
+  };
+
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={onClose}>
@@ -83,7 +88,9 @@ const NewBankModal = ({ isOpen, onClose, onSubmit }) => {
                 </div>
 
                 <div className="flex justify-end gap-2">
-                  <Button onClick={onClose}>Cancel</Button>
+                  <Button type="button" onClick={handleCancel}>
+                    Cancel
+                  </Button>
                   <Button type="submit">Add Bank</Button>
                 </div>
               </form>

@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import { useAuth0 } from "@auth0/auth0-react";
 
 import Table from "../Table";
-import { updateCashData } from "../../store/slices/cashSlice";
+import { deleteCashData, updateCashData } from "../../store/slices/cashSlice";
 import { useCashData } from "../../hooks/useCashData";
 
 const CashTable = () => {
@@ -14,6 +14,20 @@ const CashTable = () => {
     tableHeading: "Cash Overview",
     headings: ["Bank", "Currency", "Balance"],
     keys: ["bank", "currency", "balance"],
+  };
+
+  // Delete balance function
+  const handleDelete = async ($id) => {
+    // 1. Get the current object that needs deleting
+    const currentItem = entries.find((item) => item.$id === $id);
+    if (!currentItem) return;
+
+    // 2. Call Appwrite to delete the backend
+    dispatch(
+      deleteCashData({
+        documentId: $id,
+      })
+    );
   };
 
   // Update balance function
@@ -44,6 +58,7 @@ const CashTable = () => {
         data={[...entries, ...(total ? [total] : [])]}
         editableColumnKey={"balance"}
         onUpdate={handleUpdate}
+        onDelete={handleDelete}
       />
     </div>
   );

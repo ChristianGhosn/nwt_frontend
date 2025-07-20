@@ -32,8 +32,6 @@ export const updateCash = async (data, documentId, ownerId) => {
       data
     );
 
-    // const updatedCashList = await getCash(ownerId);
-
     return updated;
   } catch (error) {
     console.error("Error updating cash:", error);
@@ -53,6 +51,21 @@ export const createCash = async (data) => {
     return response;
   } catch (error) {
     console.error("Error creating cash:", error);
+    return null;
+  }
+};
+
+export const deleteCash = async (documentId, ownerId) => {
+  try {
+    const response = await databases.deleteDocument(
+      import.meta.env.VITE_APPWRITE_DB_ID,
+      import.meta.env.VITE_APPWRITE_CASH_COLLECTION_ID,
+      documentId
+    );
+
+    return response;
+  } catch (error) {
+    console.error("Error deleting cash:", error);
     return null;
   }
 };

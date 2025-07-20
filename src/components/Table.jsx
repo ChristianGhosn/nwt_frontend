@@ -10,6 +10,7 @@ const Table = ({
   data: initialData,
   editableColumnKey,
   onUpdate,
+  onDelete,
 }) => {
   const [data, setData] = useState(initialData);
 
@@ -27,6 +28,7 @@ const Table = ({
           data={data}
           keys={keys}
           onUpdate={onUpdate}
+          onDelete={onDelete}
           editableColumnKey={editableColumnKey}
         />
       </table>

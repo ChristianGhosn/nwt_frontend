@@ -1,5 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { createCashAPI, fetchCashAPI, updateCashAPI } from "../../api/cash";
+import {
+  createCashAPI,
+  fetchCashAPI,
+  updateCashAPI,
+  deleteCashAPI,
+} from "../../api/cash";
 
 export const fetchCashData = createAsyncThunk(
   "cash/fetchCashData",
@@ -25,6 +30,15 @@ export const createCashData = createAsyncThunk(
     const res = await createCashAPI(data, ownerId);
     if (!res.success) return rejectWithValue(res.message);
     return res.data;
+  }
+);
+
+export const deleteCashData = createAsyncThunk(
+  "cash/deleteCashData",
+  async ({ documentId, ownerId }, { rejectWithValue }) => {
+    const res = await deleteCashAPI(documentId);
+    if (!res.success) return rejectWithValue(res.message);
+    return documentId; // Return the document ID for deletion
   }
 );
 
@@ -102,6 +116,34 @@ const cashSlice = createSlice({
         state.loading = false;
       })
       .addCase(updateCashData.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Unknown error";
+      })
+
+      // Handle delete cash data
+      .addCase(deleteCashData.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteCashData.fulfilled, (state, action) => {
+        const deletedId = action.payload;
+
+        // Filter out the deleted entry
+        state.entries = state.entries.filter((item) => item.$id !== deletedId);
+
+        // Recalculate the total balance
+        const newTotal = state.entries.reduce(
+          (acc, item) => acc + Number(item.balance || 0),
+          0
+        );
+
+        if (state.total) {
+          state.total.balance = Number(newTotal.toFixed(2));
+        }
+
+        state.loading = false;
+      })
+      .addCase(deleteCashData.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Unknown error";
       });

@@ -1,5 +1,5 @@
 // src/api/cash.js
-import { createCash, getCash, updateCash } from "../lib/appwrite";
+import { createCash, getCash, updateCash, deleteCash } from "../lib/appwrite";
 
 /**
  * Fetches cash data for a given owner and formats it
@@ -71,6 +71,25 @@ export const createCashAPI = async (data, ownerId) => {
     return {
       success: false,
       message: error.message || "Creation failed",
+    };
+  }
+};
+
+/**
+ * Deletes cash data for a given owner, formats it, and returns the deleted data id
+ * to match API-like structure.
+ */
+export const deleteCashAPI = async (documentId) => {
+  try {
+    const deleted = await deleteCash(documentId);
+    return {
+      success: true,
+      data: deleted,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message || "Deletion failed",
     };
   }
 };
