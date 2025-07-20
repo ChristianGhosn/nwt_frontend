@@ -17,7 +17,7 @@ createRoot(document.getElementById("root")).render(
     }}
   >
     <Toaster
-      position="top-right"
+      position="top"
       reverseOrder={false}
       toastOptions={{
         duration: 3000,
