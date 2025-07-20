@@ -8,7 +8,8 @@ const Table = ({
   headings,
   keys,
   data: initialData,
-  editableColumnKey,
+  editableColumns,
+  deletableRows = false,
   onUpdate,
   onDelete,
 }) => {
@@ -29,7 +30,8 @@ const Table = ({
           keys={keys}
           onUpdate={onUpdate}
           onDelete={onDelete}
-          editableColumnKey={editableColumnKey}
+          editableColumns={editableColumns}
+          deletableRows={deletableRows}
         />
       </table>
     </div>

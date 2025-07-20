@@ -1,31 +1,48 @@
-import { useState } from "react";
-import { SquarePen, Save, X } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 
-const TableRow = ({ item, keys, onUpdate, onDelete, editableColumnKey }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedValue, setEditedValue] = useState(item[editableColumnKey]);
+import TableCell from "./TableCell";
+import { X } from "lucide-react";
 
-  const handleEditClick = () => {
-    if (!isTotalRow) {
-      setEditedValue(item[editableColumnKey]);
-      setIsEditing(true);
+const TableRow = ({
+  item,
+  keys,
+  onUpdate,
+  onDelete,
+  editableColumns = {},
+  deletableRows,
+}) => {
+  const [editingCell, setEditingCell] = useState(null);
+
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (editingCell && inputRef.current) {
+      inputRef.current.focus();
     }
-  };
+  }, [editingCell]);
 
-  const handleDeleteClick = () => {
+  const handleDelete = () => {
     if (onDelete && typeof onDelete === "function") {
       onDelete(item.$id);
     }
   };
 
-  const handleSaveClick = () => {
-    if (editedValue === "" || isNaN(editedValue)) return;
-    setIsEditing(false);
-    onUpdate(item.$id, editableColumnKey, parseFloat(editedValue));
+  const handleSave = () => {
+    const { key, value } = editingCell || {};
+    if (!key) return;
+
+    const columnType = editableColumns[key]?.type;
+    if (columnType === "number" && (value === "" || isNaN(value))) return;
+
+    if (value !== item[key]) {
+      onUpdate(item.$id, key, value);
+    }
+
+    setEditingCell(null);
   };
 
-  const handleCancelClick = () => {
-    setIsEditing(false);
+  const handleCancel = () => {
+    setEditingCell(null);
   };
 
   const isTotalRow =
@@ -43,64 +60,38 @@ const TableRow = ({ item, keys, onUpdate, onDelete, editableColumnKey }) => {
     >
       {keys.map((key, index) => {
         const value = item[key];
-        const displayValue =
-          typeof value === "number" ? `$${value.toFixed(2)}` : value ?? "";
+        const isEditable = !!editableColumns[key];
+        const isCellEditing = editingCell?.key === key;
 
         return (
-          <td
+          <TableCell
             key={index}
-            className={`px-4 py-3 ${isTotalRow ? "font-semibold" : ""}`}
-          >
-            {isEditing && key === editableColumnKey ? (
-              <input
-                type="number"
-                className="w-[80px] max-w-full border border-gray-400 dark:border-gray-200 rounded-lg px-2 py-1 text-sm"
-                value={editedValue ?? ""}
-                onChange={(e) =>
-                  setEditedValue(
-                    e.target.value === "" ? "" : parseFloat(e.target.value)
-                  )
-                }
-              />
-            ) : (
-              displayValue
-            )}
-          </td>
+            value={editingCell?.key === key ? editingCell.value : value}
+            columnKey={key}
+            itemId={item.$id}
+            isEditing={isCellEditing}
+            editable={isEditable}
+            inputType={editableColumns[key]?.type}
+            options={editableColumns[key]?.options || []}
+            onStartEdit={() => setEditingCell({ key, value })}
+            onChange={(newValue) =>
+              setEditingCell((prev) => ({ ...prev, value: newValue }))
+            }
+            onSave={handleSave}
+            onCancel={handleCancel}
+          />
         );
       })}
 
-      {editableColumnKey && (
-        <td className="px-2 py-3 text-right align-middle w-1 whitespace-nowrap">
-          {isTotalRow ? null : isEditing ? (
-            <div className="flex items-center gap-2">
-              <button
-                className="hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer"
-                onClick={handleSaveClick}
-              >
-                <Save size={18} strokeWidth={1.25} />
-              </button>
-              <button
-                className="hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer"
-                onClick={handleCancelClick}
-              >
-                <X size={18} strokeWidth={1.25} />
-              </button>
-            </div>
-          ) : (
-            <div className="flex items-center justify-end gap-2">
-              <button
-                className="hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer"
-                onClick={handleEditClick}
-              >
-                <SquarePen size={18} strokeWidth={1.25} />
-              </button>
-              <button
-                className="hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer"
-                onClick={handleDeleteClick}
-              >
-                <X size={18} strokeWidth={1.25} />
-              </button>
-            </div>
+      {deletableRows && (
+        <td className="px-4 py-3 flex items-center justify-end">
+          {item.$id !== 0 && (
+            <button
+              onClick={() => handleDelete(item.$id)}
+              className="text-red-500 hover:text-red-700 transition-colors duration-200 cursor-pointer"
+            >
+              <X size={16} />
+            </button>
           )}
         </td>
       )}

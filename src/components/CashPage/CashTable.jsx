@@ -4,6 +4,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import Table from "../Table";
 import { deleteCashData, updateCashData } from "../../store/slices/cashSlice";
 import { useCashData } from "../../hooks/useCashData";
+import { currencies } from "../../constants/currencies";
 
 const CashTable = () => {
   const { entries, total, loading, error } = useCashData();
@@ -14,6 +15,12 @@ const CashTable = () => {
     tableHeading: "Cash Overview",
     headings: ["Bank", "Currency", "Balance"],
     keys: ["bank", "currency", "balance"],
+    editableColumns: {
+      balance: { type: "number" },
+      currency: { type: "select", options: currencies },
+      bank: { type: "text" },
+    },
+    deletableRows: true,
   };
 
   // Delete balance function
@@ -56,7 +63,6 @@ const CashTable = () => {
       <Table
         {...config}
         data={[...entries, ...(total ? [total] : [])]}
-        editableColumnKey={"balance"}
         onUpdate={handleUpdate}
         onDelete={handleDelete}
       />

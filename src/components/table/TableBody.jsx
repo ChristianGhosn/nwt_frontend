@@ -1,6 +1,13 @@
 import TableRow from "./TableRow";
 
-const TableBody = ({ data, keys, onUpdate, onDelete, editableColumnKey }) => {
+const TableBody = ({
+  data,
+  keys,
+  onUpdate,
+  onDelete,
+  editableColumns,
+  deletableRows,
+}) => {
   return (
     <tbody className="divide-y divide-gray-300">
       {data.map((item, rowIndex) => (
@@ -10,7 +17,8 @@ const TableBody = ({ data, keys, onUpdate, onDelete, editableColumnKey }) => {
           keys={keys}
           onUpdate={onUpdate}
           onDelete={onDelete}
-          editableColumnKey={editableColumnKey}
+          editableColumns={editableColumns}
+          deletableRows={deletableRows}
         />
       ))}
     </tbody>
