@@ -84,9 +84,12 @@ const TableCell = ({
 
   return (
     <td
+      ref={displayRef}
       className="px-4 py-3 relative group"
       style={
-        isEditing && cellWidth ? { minWidth: cellWidth + "px" } : undefined
+        isEditing && cellWidth
+          ? { minWidth: cellWidth + "px", width: cellWidth + "px" }
+          : undefined
       }
     >
       {isEditing && itemId !== 0 ? (
@@ -114,15 +117,29 @@ const TableCell = ({
           </div>
         </form>
       ) : (
-        <div className="flex items-center justify-between gap-1 w-full">
+        <div
+          className={`flex items-center justify-between gap-1 w-full ${
+            itemId !== 0 ? "cursor-pointer" : ""
+          }`}
+          onClick={() => {
+            if (editable && itemId !== 0) {
+              onStartEdit(columnKey);
+            }
+          }}
+        >
           <span ref={displayRef} className="font-medium truncate">
             {displayValue}
           </span>
           {editable && itemId !== 0 && (
-            <button onClick={() => onStartEdit(columnKey)}>
+            <button
+              onClick={(e) => {
+                e.stopPropagation(); // prevent double firing
+                onStartEdit(columnKey);
+              }}
+            >
               <SquarePen
                 size={16}
-                className="absolute right-1 top-1/2 -translate-y-1/2 md:opacity-0 text-gray-400 dark:text-gray-200 md:group-hover:opacity-100 transition cursor-pointer"
+                className="absolute right-1 top-1/2 -translate-y-1/2 opacity-0 dark:text-gray-200 group-hover:opacity-100 transition cursor-pointer"
               />
             </button>
           )}
