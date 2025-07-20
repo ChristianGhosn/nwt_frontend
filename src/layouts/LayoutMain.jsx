@@ -141,7 +141,7 @@ const LayoutMain = () => {
                   <div
                     className={`${
                       isActive(link.to) ? "bg-gray-700" : ""
-                    } text-white hover:text-gray-300 hover:bg-gray-700 w-full py-2 px-4 rounded-xl flex items-center gap-2`}
+                    } text-white hover:text-gray-300 hover:bg-gray-700 transition-colors duration-200 w-full py-2 px-4 rounded-xl flex items-center gap-2`}
                   >
                     {link.icon}
                     <p>{link.label}</p>

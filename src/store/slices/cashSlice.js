@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import toast from "../../../node_modules/react-hot-toast/src/index";
 import {
   createCashAPI,
   fetchCashAPI,
@@ -18,27 +19,78 @@ export const fetchCashData = createAsyncThunk(
 export const updateCashData = createAsyncThunk(
   "cash/updateCashData",
   async ({ data, documentId, ownerId }, { rejectWithValue }) => {
-    const res = await updateCashAPI(data, documentId, ownerId);
-    if (!res.success) return rejectWithValue(res.message);
-    return res.data;
+    try {
+      const res = await toast.promise(
+        updateCashAPI(data, documentId, ownerId),
+        {
+          loading: "Updating bank account...",
+          success: "Bank Account updated successfully!",
+          error: "Failed to update bank account",
+        },
+        {
+          style: {
+            minWidth: "250px",
+          },
+        }
+      );
+
+      if (!res.success) return rejectWithValue(res.message);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.message || "Something went wrong");
+    }
   }
 );
 
 export const createCashData = createAsyncThunk(
   "cash/createCashData",
   async ({ data, ownerId }, { rejectWithValue }) => {
-    const res = await createCashAPI(data, ownerId);
-    if (!res.success) return rejectWithValue(res.message);
-    return res.data;
+    try {
+      const res = await toast.promise(
+        createCashAPI(data, ownerId),
+        {
+          loading: "Creating bank account...",
+          success: "New Bank Account created successfully!",
+          error: "Failed to create bank account",
+        },
+        {
+          style: {
+            minWidth: "250px",
+          },
+        }
+      );
+
+      if (!res.success) return rejectWithValue(res.message);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.message || "Something went wrong");
+    }
   }
 );
 
 export const deleteCashData = createAsyncThunk(
   "cash/deleteCashData",
-  async ({ documentId, ownerId }, { rejectWithValue }) => {
-    const res = await deleteCashAPI(documentId);
-    if (!res.success) return rejectWithValue(res.message);
-    return documentId; // Return the document ID for deletion
+  async ({ documentId }, { rejectWithValue }) => {
+    try {
+      const res = await toast.promise(
+        deleteCashAPI(documentId),
+        {
+          loading: "Deleting bank account...",
+          success: "Bank Account deleted successfully!",
+          error: "Failed to delete bank account",
+        },
+        {
+          style: {
+            minWidth: "250px",
+          },
+        }
+      );
+
+      if (!res.success) return rejectWithValue(res.message);
+      return documentId; // Return the document ID for deletion
+    } catch (error) {
+      return rejectWithValue(error.message || "Something went wrong");
+    }
   }
 );
 
