@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import TableHeadings from "./table/TableHeadings";
 import TableBody from "./table/TableBody";
+import Loader from "./Loader";
 
 const Table = ({
   tableHeading,
@@ -12,12 +13,17 @@ const Table = ({
   deletableRows = false,
   onUpdate,
   onDelete,
+  isLoading = true,
 }) => {
   const [data, setData] = useState(initialData);
 
   useEffect(() => {
     setData(initialData);
   }, [initialData]);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="mt-4 overflow-x-auto w-full">

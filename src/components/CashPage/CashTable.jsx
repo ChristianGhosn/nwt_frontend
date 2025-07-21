@@ -65,6 +65,7 @@ const CashTable = () => {
         data={[...entries, ...(total ? [total] : [])]}
         onUpdate={handleUpdate}
         onDelete={handleDelete}
+        isLoading={loading}
       />
     </div>
   );
