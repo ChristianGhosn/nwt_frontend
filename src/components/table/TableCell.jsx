@@ -119,7 +119,7 @@ const TableCell = ({
       ) : (
         <div
           className={`flex items-center justify-between gap-1 w-full ${
-            itemId !== 0 ? "cursor-pointer" : ""
+            itemId !== 0 && editable ? "cursor-pointer" : ""
           }`}
           onClick={() => {
             if (editable && itemId !== 0) {
@@ -133,7 +133,7 @@ const TableCell = ({
           {editable && itemId !== 0 && (
             <button
               onClick={(e) => {
-                e.stopPropagation(); // prevent double firing
+                e.stopPropagation();
                 onStartEdit(columnKey);
               }}
             >

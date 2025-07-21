@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Construction from "./pages/Construction";
 import NotFound from "./pages/NotFound";
 import Cash from "./pages/Cash";
+import ETFs from "./pages/ETFs";
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
         <Route element={<LayoutMain />}>
           <Route index element={<Dashboard />} />
           <Route path="cash" element={<Cash />} />
-          <Route path="etf" element={<Construction />} />
+          <Route path="etf" element={<ETFs />} />
           <Route path="stocks" element={<Construction />} />
           <Route path="managed-funds" element={<Construction />} />
           <Route path="crypto" element={<Construction />} />
