@@ -13,7 +13,7 @@ const Table = ({
   deletableRows = false,
   onUpdate,
   onDelete,
-  isLoading = true,
+  isLoading = false,
 }) => {
   const [data, setData] = useState(initialData);
 

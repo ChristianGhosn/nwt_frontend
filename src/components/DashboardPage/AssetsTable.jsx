@@ -83,7 +83,7 @@ const AssetsTable = () => {
     },
   ];
 
-  return <Table {...config} data={data} />;
+  return <Table {...config} data={data} isLoading={loading} />;
 };
 
 export default AssetsTable;
