@@ -8,21 +8,21 @@ const LiabilitiesTable = () => {
   };
   const data = [
     {
-      $id: 1,
+      _id: 1,
       category: "Loans",
       initialDebt: 0.0,
       paid: 0.0,
       currentDebt: 0.0,
     },
     {
-      $id: 2,
+      _id: 2,
       category: "Property Loans",
       initialDebt: 0.0,
       paid: 0.0,
       currentDebt: 0.0,
     },
     {
-      $id: 0,
+      _id: 0,
       category: "Total Liabilities",
       initialDebt: 0.0,
       paid: 0.0,

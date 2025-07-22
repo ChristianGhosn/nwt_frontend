@@ -23,7 +23,7 @@ const TableRow = ({
 
   const handleDelete = () => {
     if (onDelete && typeof onDelete === "function") {
-      onDelete(item.$id);
+      onDelete(item._id);
     }
   };
 
@@ -35,7 +35,7 @@ const TableRow = ({
     if (columnType === "number" && (value === "" || isNaN(value))) return;
 
     if (value !== item[key]) {
-      onUpdate(item.$id, key, value);
+      onUpdate(item._id, key, value);
     }
 
     setEditingCell(null);
@@ -46,7 +46,7 @@ const TableRow = ({
   };
 
   const isTotalRow =
-    item.$id === 0 &&
+    item._id === 0 &&
     Object.values(item).some(
       (value) =>
         typeof value === "string" && value.toLowerCase().includes("total")
@@ -68,7 +68,7 @@ const TableRow = ({
             key={index}
             value={editingCell?.key === key ? editingCell.value : value}
             columnKey={key}
-            itemId={item.$id}
+            itemId={item._id}
             isEditing={isCellEditing}
             editable={isEditable}
             inputType={editableColumns[key]?.type}
@@ -85,9 +85,9 @@ const TableRow = ({
 
       {deletableRows && (
         <td className="px-4 py-3 flex items-center justify-end">
-          {item.$id !== 0 && (
+          {item._id !== 0 && (
             <button
-              onClick={() => handleDelete(item.$id)}
+              onClick={() => handleDelete(item._id)}
               className="text-red-500 hover:text-red-700 transition-colors duration-200 cursor-pointer"
             >
               <X size={16} />

@@ -7,8 +7,8 @@ import { useCashData } from "../../hooks/useCashData";
 import { currencies } from "../../constants/currencies";
 
 const CashTable = () => {
+  const { user, getAccessTokenSilently } = useAuth0();
   const { entries, total, loading, error } = useCashData();
-  const { user } = useAuth0();
   const dispatch = useDispatch();
 
   const config = {
@@ -24,23 +24,24 @@ const CashTable = () => {
   };
 
   // Delete balance function
-  const handleDelete = async ($id) => {
+  const handleDelete = async (_id) => {
     // 1. Get the current object that needs deleting
-    const currentItem = entries.find((item) => item.$id === $id);
+    const currentItem = entries.find((item) => item._id === _id);
     if (!currentItem) return;
 
     // 2. Call Appwrite to delete the backend
     dispatch(
       deleteCashData({
-        documentId: $id,
+        documentId: _id,
+        getAccessTokenSilently,
       })
     );
   };
 
   // Update balance function
-  const handleUpdate = async ($id, key, value) => {
+  const handleUpdate = async (_id, key, value) => {
     // 1. Get the current object that needs updating
-    const currentItem = entries.find((item) => item.$id === $id);
+    const currentItem = entries.find((item) => item._id === _id);
     if (!currentItem) return;
 
     // 2. Create updated object (only the changed field)
@@ -51,8 +52,8 @@ const CashTable = () => {
       dispatch(
         updateCashData({
           data: updatedFields,
-          documentId: $id,
-          ownerId: user.sub,
+          documentId: _id,
+          getAccessTokenSilently,
         })
       );
     }
