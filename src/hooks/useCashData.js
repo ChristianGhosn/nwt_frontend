@@ -10,10 +10,10 @@ export const useCashData = () => {
   const { entries, total, loading, error } = useSelector((state) => state.cash);
 
   useEffect(() => {
-    if (entries.length === 0 && !loading) {
+    if (entries.length === 0 && !loading && !error && getAccessTokenSilently) {
       dispatch(fetchCashData(getAccessTokenSilently));
     }
-  }, [dispatch, entries, loading]);
+  }, [dispatch, entries.length, loading, error, getAccessTokenSilently]);
 
   return { entries, total, loading, error };
 };

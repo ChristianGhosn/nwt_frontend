@@ -7,7 +7,7 @@ import { useCashData } from "../../hooks/useCashData";
 import { currencies } from "../../constants/currencies";
 
 const CashTable = () => {
-  const { user, getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAuth0();
   const { entries, total, loading, error } = useCashData();
   const dispatch = useDispatch();
 

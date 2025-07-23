@@ -24,7 +24,6 @@ const handleApiError = (error, rejectWithValue, defaultMessage) => {
 
 export const fetchCashData = createAsyncThunk(
   "cash/fetchCashData",
-  // getAccessTokenSilently is passed from the component dispatching this thunk
   async (getAccessTokenSilently, { rejectWithValue }) => {
     try {
       if (
@@ -38,8 +37,8 @@ export const fetchCashData = createAsyncThunk(
 
       const token = await getAccessTokenSilently({
         audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-        // scope: 'read:cash', // If your API requires specific read scopes
       });
+      console.log(token);
 
       const response = await axios.get(API_BASE_URL, {
         headers: {
