@@ -7,17 +7,29 @@ const API_BASE_URL = "http://localhost:5050/api/cash";
 // Helper function for consistent error handling
 const handleApiError = (error, rejectWithValue, defaultMessage) => {
   console.error("API call failed:", error);
+
   // Axios error structure
   if (error.response) {
     // Server responded with a status other than 2xx
+    // Check for 400 status code AND if the 'errors' property exists and is an array
+    if (
+      error.response.status === 400 &&
+      Array.isArray(error.response.data.errors)
+    ) {
+      // Reject with the structured errors array so the calling component can consume it
+      return rejectWithValue(error.response.data.errors);
+    }
+
+    // For other backend error messages (e.g., general error messages for 401, 403, 500 without structured errors)
+    // or if the 400 response just has a 'message' but no 'errors' array.
     return rejectWithValue(error.response.data.message || defaultMessage);
   } else if (error.request) {
-    // Request was made but no response received
+    // Request was made but no response received (e.g., server down, network issue)
     return rejectWithValue(
       "No response from server. Check network connection."
     );
   } else {
-    // Something else happened in setting up the request
+    // Something else happened in setting up the request that triggered an Error
     return rejectWithValue(error.message || defaultMessage);
   }
 };
@@ -107,16 +119,12 @@ export const createCashData = createAsyncThunk(
       });
 
       const res = await toast.promise(
-        axios.post(
-          API_BASE_URL,
-          data, // Data to send in the request body
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        ),
+        axios.post(API_BASE_URL, data, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }),
         {
           loading: "Creating bank account...",
           success: "New Bank Account created successfully!",
@@ -160,16 +168,12 @@ export const updateCashData = createAsyncThunk(
       });
 
       const res = await toast.promise(
-        axios.put(
-          `${API_BASE_URL}/${documentId}`, // PUT request to specific ID
-          data, // Data to send in the request body
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        ),
+        axios.put(`${API_BASE_URL}/${documentId}`, data, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }),
         {
           loading: "Updating bank account...",
           success: "Bank Account updated successfully!",
@@ -183,7 +187,7 @@ export const updateCashData = createAsyncThunk(
       );
 
       // Assuming your backend PUT /api/cash/:id returns the updated item
-      return res.data; // This will be the updated entry
+      return res.data.data; // This will be the updated entry
     } catch (error) {
       return handleApiError(
         error,
@@ -252,6 +256,7 @@ const cashSlice = createSlice({
     total: null,
     loading: false,
     error: null,
+    validationErrors: {},
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -276,6 +281,7 @@ const cashSlice = createSlice({
       .addCase(createCashData.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.validationErrors = {};
       })
       .addCase(createCashData.fulfilled, (state, action) => {
         // action.payload is the new entry returned from the backend
@@ -288,10 +294,35 @@ const cashSlice = createSlice({
           state.total.balance = Number(newTotal.toFixed(2));
         }
         state.loading = false;
+        state.validationErrors = {};
       })
       .addCase(createCashData.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Unknown error";
+        state.error = null;
+        // Check if the payload is the structured error array from backend validation
+        if (
+          Array.isArray(action.payload) &&
+          action.payload.every(
+            (item) =>
+              typeof item === "object" &&
+              Object.keys(item).length === 1 &&
+              Array.isArray(Object.values(item)[0])
+          )
+        ) {
+          // Transform [{bank: ["msg"]}, {balance: ["msg"]}] into {bank: ["msg"], balance: ["msg"]}
+          state.validationErrors = action.payload.reduce(
+            (acc, currentErrorObj) => {
+              const fieldName = Object.keys(currentErrorObj)[0]; // e.g., 'bank'
+              acc[fieldName] = currentErrorObj[fieldName]; // Assign the array of messages
+              return acc;
+            },
+            {}
+          );
+        } else {
+          // It's a generic error message (string) or an unexpected payload
+          state.error = action.payload || "Unknown error occurred.";
+          state.validationErrors = {}; // Clear any previous structured errors
+        }
       })
 
       // Handle update cash data
