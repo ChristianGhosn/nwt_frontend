@@ -50,7 +50,6 @@ export const fetchCashData = createAsyncThunk(
       const token = await getAccessTokenSilently({
         audience: import.meta.env.VITE_AUTH0_AUDIENCE,
       });
-      console.log(token);
 
       const response = await axios.get(API_BASE_URL, {
         headers: {
@@ -151,7 +150,6 @@ export const createCashData = createAsyncThunk(
 
 export const updateCashData = createAsyncThunk(
   "cash/updateCashData",
-  // Pass data, documentId, and getAccessTokenSilently
   async ({ data, documentId, getAccessTokenSilently }, { rejectWithValue }) => {
     try {
       if (
@@ -168,6 +166,7 @@ export const updateCashData = createAsyncThunk(
       });
 
       const res = await toast.promise(
+        // toast.promise handles showing success/error messages
         axios.put(`${API_BASE_URL}/${documentId}`, data, {
           headers: {
             "Content-Type": "application/json",
@@ -177,7 +176,7 @@ export const updateCashData = createAsyncThunk(
         {
           loading: "Updating bank account...",
           success: "Bank Account updated successfully!",
-          error: "Failed to update bank account",
+          error: "Failed to update bank account", // <--- This is the generic toast for any error
         },
         {
           style: {
@@ -186,9 +185,11 @@ export const updateCashData = createAsyncThunk(
         }
       );
 
-      // Assuming your backend PUT /api/cash/:id returns the updated item
-      return res.data.data; // This will be the updated entry
+      return res.data; // Assuming your backend PUT /api/cash/:id returns the updated item
     } catch (error) {
+      // handleApiError will now return either the structured errors array (for 400)
+      // or a generic message string. toast.promise handles the message.
+      // We don't need to explicitly return the structured errors to the Redux state for update.
       return handleApiError(
         error,
         rejectWithValue,
@@ -267,6 +268,26 @@ const cashSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchCashData.fulfilled, (state, action) => {
+        const updatedItem = action.payload;
+        if (!state.entries || !Array.isArray(state.entries)) return;
+
+        const index = state.entries.findIndex(
+          (item) => item._id === updatedItem._id
+        );
+        if (index !== -1) {
+          state.entries[index] = updatedItem;
+        }
+        // Recalculate total if balance might have changed
+        const newTotal = state.entries.reduce(
+          (acc, item) => acc + Number(item.balance || 0),
+          0
+        );
+        if (state.total) {
+          state.total.balance = Number(newTotal.toFixed(2));
+        }
+
+        state.loading = false;
+        state.error = null;
         const { entries, total } = action.payload; // Payload should now directly match this structure
         state.entries = entries;
         state.total = total;
@@ -274,7 +295,10 @@ const cashSlice = createSlice({
       })
       .addCase(fetchCashData.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Unknown error";
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to update bank account due to validation.";
       })
 
       // Handle create cash data

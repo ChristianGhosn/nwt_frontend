@@ -49,13 +49,24 @@ const CashTable = () => {
 
     // 3. Call Appwrite to update the backend
     if (updatedFields) {
-      dispatch(
-        updateCashData({
-          data: updatedFields,
-          documentId: _id,
-          getAccessTokenSilently,
-        })
-      );
+      try {
+        // Dispatch the update thunk. toast.promise (inside thunk) handles showing feedback.
+        // .unwrap() will re-throw the rejected value if the update fails (e.g., validation error).
+        await dispatch(
+          updateCashData({
+            data: updatedFields,
+            documentId: _id,
+            getAccessTokenSilently: getAccessTokenSilently,
+          })
+        ).unwrap();
+      } catch (rejectedPayload) {
+        // This catch block will be hit if updateCashData.unwrap() throws an error.
+        // The toast.promise inside updateCashData thunk has already shown a general error message.
+        // You don't need to display a separate message here unless you want additional local handling.
+        console.error("Update failed:", rejectedPayload);
+        // Stay in edit mode, or exit based on your UX preference
+        // setEditingColumn(null); // Option: exit edit mode anyway
+      }
     }
   };
 
