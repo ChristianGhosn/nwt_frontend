@@ -30,12 +30,12 @@ const CashTable = () => {
     if (!currentItem) return;
 
     // 2. Call Appwrite to delete the backend
-    dispatch(
+    await dispatch(
       deleteCashData({
         documentId: _id,
         getAccessTokenSilently,
       })
-    );
+    ).unwrap();
   };
 
   // Update balance function
