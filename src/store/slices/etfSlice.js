@@ -107,6 +107,53 @@ export const createTrackedETF = createAsyncThunk(
   }
 );
 
+export const updateTrackedETF = createAsyncThunk(
+  "etf/updateTrackedETF",
+  async ({ data, documentId, getAccessTokenSilently }, { rejectWithValue }) => {
+    try {
+      if (
+        !getAccessTokenSilently ||
+        typeof getAccessTokenSilently !== "function"
+      ) {
+        throw new Error(
+          "Authentication function (getAccessTokenSilently) not provided to updateCashData."
+        );
+      }
+
+      const token = await getAccessTokenSilently({
+        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
+      });
+
+      const res = await toast.promise(
+        axios.put(`${API_BASE_URL}/${documentId}`, data, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+        {
+          loading: "Updating tracked ETF...",
+          success: "Tracked ETF updated successfully!",
+          error: "Failed to update tracked ETF",
+        },
+        {
+          style: {
+            minWidth: "250px",
+          },
+        }
+      );
+
+      return res.data;
+    } catch (error) {
+      return handleApiError(
+        error,
+        rejectWithValue,
+        "Failed to update tracked ETF."
+      );
+    }
+  }
+);
+
 export const deleteTrackedETF = createAsyncThunk(
   "etf/deleteTrackedETF",
   async ({ documentId, getAccessTokenSilently }, { rejectWithValue }) => {
@@ -228,6 +275,30 @@ const etfSlice = createSlice({
           state.error = action.payload || "Unkown error occured.";
           state.validationErrors = {};
         }
+      })
+
+      // Handle update tracked ETF data
+      .addCase(updateTrackedETF.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateTrackedETF.fulfilled, (state, action) => {
+        const updatedItem = action.payload;
+        if (!state.trackedETFs || !Array.isArray(state.trackedETFs)) return;
+
+        const index = state.trackedETFs.findIndex(
+          (item) => item._id === updatedItem._id
+        );
+
+        if (index !== -1) {
+          state.trackedETFs[index] = updatedItem;
+        }
+
+        state.loading = false;
+      })
+      .addCase(updateTrackedETF.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Unkown error";
       })
 
       // Handle delete tracked ETF data

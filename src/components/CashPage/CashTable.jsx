@@ -15,6 +15,9 @@ const CashTable = () => {
     tableHeading: "Cash Overview",
     headings: ["Bank", "Currency", "Balance"],
     keys: ["bank", "currency", "balance"],
+    columnFormats: {
+      balance: "currency",
+    },
     editableColumns: {
       balance: { type: "number" },
       currency: { type: "select", options: currencies },
@@ -24,30 +27,30 @@ const CashTable = () => {
   };
 
   // Delete balance function
-  const handleDelete = async (_id) => {
+  const handleDelete = async (id) => {
     // 1. Get the current object that needs deleting
-    const currentItem = entries.find((item) => item._id === _id);
+    const currentItem = entries.find((item) => item._id === id);
     if (!currentItem) return;
 
     // 2. Call endpoint to delete in backend
     await dispatch(
       deleteCashData({
-        documentId: _id,
+        documentId: id,
         getAccessTokenSilently,
       })
     ).unwrap();
   };
 
   // Update balance function
-  const handleUpdate = async (_id, key, value) => {
+  const handleUpdate = async (id, key, value) => {
     // 1. Get the current object that needs updating
-    const currentItem = entries.find((item) => item._id === _id);
+    const currentItem = entries.find((item) => item._id === id);
     if (!currentItem) return;
 
     // 2. Create updated object (only the changed field)
     const updatedFields = { [key]: value };
 
-    // 3. Call Appwrite to update the backend
+    // 3. Call endpoint to update in backend
     if (updatedFields) {
       try {
         // Dispatch the update thunk. toast.promise (inside thunk) handles showing feedback.
@@ -55,15 +58,15 @@ const CashTable = () => {
         await dispatch(
           updateCashData({
             data: updatedFields,
-            documentId: _id,
-            getAccessTokenSilently: getAccessTokenSilently,
+            documentId: id,
+            getAccessTokenSilently,
           })
         ).unwrap();
-      } catch (rejectedPayload) {
+      } catch (error) {
         // This catch block will be hit if updateCashData.unwrap() throws an error.
         // The toast.promise inside updateCashData thunk has already shown a general error message.
         // You don't need to display a separate message here unless you want additional local handling.
-        console.error("Update failed:", rejectedPayload);
+        console.error("Update failed:", error);
         // Stay in edit mode, or exit based on your UX preference
         // setEditingColumn(null); // Option: exit edit mode anyway
       }

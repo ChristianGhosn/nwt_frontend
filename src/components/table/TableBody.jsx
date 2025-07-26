@@ -3,6 +3,7 @@ import TableRow from "./TableRow";
 const TableBody = ({
   data,
   keys,
+  columnFormats,
   onUpdate,
   onDelete,
   editableColumns,
@@ -15,6 +16,7 @@ const TableBody = ({
           key={rowIndex}
           item={item}
           keys={keys}
+          columnFormats={columnFormats}
           onUpdate={onUpdate}
           onDelete={onDelete}
           editableColumns={editableColumns}

@@ -8,6 +8,7 @@ const Table = ({
   tableHeading,
   headings,
   keys,
+  columnFormats,
   data: initialData,
   editableColumns,
   deletableRows = false,
@@ -34,6 +35,7 @@ const Table = ({
         <TableBody
           data={data}
           keys={keys}
+          columnFormats={columnFormats}
           onUpdate={onUpdate}
           onDelete={onDelete}
           editableColumns={editableColumns}

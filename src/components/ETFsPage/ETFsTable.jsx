@@ -2,7 +2,10 @@ import Table from "../Table";
 import { currencies } from "../../constants/currencies";
 import { useETFsData } from "../../hooks/useETFsData";
 import { useDispatch } from "react-redux";
-import { deleteTrackedETF } from "../../store/slices/etfSlice";
+import {
+  deleteTrackedETF,
+  updateTrackedETF,
+} from "../../store/slices/etfSlice";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const ETFsTable = () => {
@@ -35,15 +38,45 @@ const ETFsTable = () => {
       "target_allocation",
       "management_fee",
     ],
+    columnFormats: {
+      held_units: "number",
+      live_price: "currency",
+      live_value: "currency",
+      avg_price: "currency",
+      target_allocation: "percentage",
+      current_allocation: "percentage",
+      management_fee: "percentage",
+    },
     editableColumns: {
-      ticker: { type: "text" },
-      currency: { type: "select", options: currencies },
+      target_allocation: { type: "number" },
+      management_fee: { type: "number" },
     },
     deletableRows: true,
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async (id, key, value) => {
     console.log("Updating Table");
+    // 1. Get the current object that needs updating
+    const currentItem = trackedETFs.find((item) => item._id === id);
+    if (!currentItem) return;
+
+    // 2. Create updated object (only the changed field)
+    const updatedFields = { [key]: value };
+
+    // 3. Call endpoint to update in backend
+    if (updatedFields) {
+      try {
+        await dispatch(
+          updateTrackedETF({
+            data: updatedFields,
+            documentId: id,
+            getAccessTokenSilently,
+          })
+        ).unwrap();
+      } catch (error) {
+        console.error("Update failed:", error);
+      }
+    }
   };
 
   const handleDelete = async (id) => {
@@ -67,6 +100,7 @@ const ETFsTable = () => {
       data={trackedETFs}
       onUpdate={handleUpdate}
       onDelete={handleDelete}
+      isLoading={loading}
     />
   );
 };

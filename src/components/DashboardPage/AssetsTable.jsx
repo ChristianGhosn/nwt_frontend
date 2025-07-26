@@ -6,6 +6,11 @@ const AssetsTable = () => {
     tableHeading: "Assets Overview",
     headings: ["", "Total ($)", "Gains ($)", "Gains (%)"],
     keys: ["category", "total", "gains", "gainsPercentage"],
+    columnFormats: {
+      total: "currency",
+      gains: "currency",
+      gainsPercentage: "percentage",
+    },
   };
 
   const { total: totalCash, loading, error } = useCashData();

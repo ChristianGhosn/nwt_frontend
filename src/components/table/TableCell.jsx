@@ -5,6 +5,7 @@ const TableCell = ({
   value,
   columnKey,
   itemId,
+  format,
   isEditing,
   editable,
   inputType,
@@ -79,8 +80,23 @@ const TableCell = ({
     );
   };
 
-  const displayValue =
-    typeof value === "number" ? `$${value.toFixed(2)}` : value ?? "";
+  const formatDisplayValue = (val) => {
+    if (format === "currency" && typeof val === "number") {
+      return `$${val.toFixed(2)}`;
+    }
+
+    if (format === "number" && typeof val === "number") {
+      return val.toFixed(2);
+    }
+
+    if (format === "percentage" && typeof val === "number") {
+      return `${val.toFixed(2)}%`;
+    }
+
+    return val ?? "";
+  };
+
+  const displayValue = formatDisplayValue(value);
 
   return (
     <td

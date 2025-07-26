@@ -5,6 +5,11 @@ const LiabilitiesTable = () => {
     tableHeading: "Liabilities Overview",
     headings: ["Name", "Initial Debt", "Paid", "Current Debt"],
     keys: ["category", "initialDebt", "paid", "currentDebt"],
+    columnFormats: {
+      initialDebt: "currency",
+      paid: "currency",
+      currentDebt: "currency",
+    },
   };
   const data = [
     {

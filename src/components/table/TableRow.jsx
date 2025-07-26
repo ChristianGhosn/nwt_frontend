@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 const TableRow = ({
   item,
   keys,
+  columnFormats,
   onUpdate,
   onDelete,
   editableColumns = {},
@@ -69,6 +70,7 @@ const TableRow = ({
             value={editingCell?.key === key ? editingCell.value : value}
             columnKey={key}
             itemId={item._id}
+            format={columnFormats?.[key]}
             isEditing={isCellEditing}
             editable={isEditable}
             inputType={editableColumns[key]?.type}
