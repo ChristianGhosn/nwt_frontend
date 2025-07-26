@@ -29,7 +29,7 @@ const CashTable = () => {
     const currentItem = entries.find((item) => item._id === _id);
     if (!currentItem) return;
 
-    // 2. Call Appwrite to delete the backend
+    // 2. Call endpoint to delete in backend
     await dispatch(
       deleteCashData({
         documentId: _id,

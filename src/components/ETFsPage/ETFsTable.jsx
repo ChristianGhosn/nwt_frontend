@@ -1,9 +1,14 @@
 import Table from "../Table";
 import { currencies } from "../../constants/currencies";
 import { useETFsData } from "../../hooks/useETFsData";
+import { useDispatch } from "react-redux";
+import { deleteTrackedETF } from "../../store/slices/etfSlice";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const ETFsTable = () => {
   const { trackedETFs, loading, error } = useETFsData();
+  const { getAccessTokenSilently } = useAuth0();
+  const dispatch = useDispatch();
   const config = {
     tableHeading: "ETFs Overview",
     headings: [
@@ -41,8 +46,19 @@ const ETFsTable = () => {
     console.log("Updating Table");
   };
 
-  const handleDelete = () => {
+  const handleDelete = async (id) => {
     console.log("Deleting Table Row");
+    // 1. Get the current object that needs deleting
+    const currentItem = trackedETFs.find((item) => item._id === id);
+    if (!currentItem) return;
+
+    // 2. Call endpoint to delete in backend
+    await dispatch(
+      deleteTrackedETF({
+        documentId: id,
+        getAccessTokenSilently,
+      })
+    ).unwrap();
   };
 
   return (

@@ -107,6 +107,51 @@ export const createTrackedETF = createAsyncThunk(
   }
 );
 
+export const deleteTrackedETF = createAsyncThunk(
+  "etf/deleteTrackedETF",
+  async ({ documentId, getAccessTokenSilently }, { rejectWithValue }) => {
+    try {
+      if (
+        !getAccessTokenSilently ||
+        typeof getAccessTokenSilently !== "function"
+      ) {
+        throw new Error(
+          "Authentication function (getAccessTokenSilently) not provided to deleteTrackedETF."
+        );
+      }
+      const token = await getAccessTokenSilently({
+        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
+      });
+
+      const res = await toast.promise(
+        axios.delete(`${API_BASE_URL}/${documentId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+        {
+          loading: "Deleting tracked ETF...",
+          fulfilled: "Tracked ETF deleted successfully",
+          rejected: "Failed to delete tracked ETF.",
+        },
+        {
+          style: {
+            minWidth: "250px",
+          },
+        }
+      );
+
+      return documentId;
+    } catch (error) {
+      return handleApiError(
+        error,
+        rejectWithValue,
+        "Failed to delete tracked ETF"
+      );
+    }
+  }
+);
+
 const etfSlice = createSlice({
   name: "etf",
   initialState: {
@@ -183,6 +228,25 @@ const etfSlice = createSlice({
           state.error = action.payload || "Unkown error occured.";
           state.validationErrors = {};
         }
+      })
+
+      // Handle delete tracked ETF data
+      .addCase(deleteTrackedETF.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteTrackedETF.fulfilled, (state, action) => {
+        const deletedId = action.payload;
+
+        state.trackedETFs = state.trackedETFs.filter(
+          (item) => item._id !== deletedId
+        );
+
+        state.loading = false;
+      })
+      .addCase(deleteTrackedETF.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Unknown error";
       });
   },
 });
