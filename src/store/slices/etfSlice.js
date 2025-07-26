@@ -123,7 +123,7 @@ export const deleteTrackedETF = createAsyncThunk(
         audience: import.meta.env.VITE_AUTH0_AUDIENCE,
       });
 
-      const res = await toast.promise(
+      await toast.promise(
         axios.delete(`${API_BASE_URL}/${documentId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -219,7 +219,7 @@ const etfSlice = createSlice({
           state.validationErrors = action.payload.reduce(
             (acc, currentErrorObj) => {
               const fieldName = Object.keys(currentErrorObj)[0];
-              acc[(fieldName = currentErrorObj[fieldName])];
+              acc[fieldName] = currentErrorObj[fieldName];
               return acc;
             },
             {}
