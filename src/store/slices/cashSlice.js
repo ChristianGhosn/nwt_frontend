@@ -225,7 +225,7 @@ const cashSlice = createSlice({
   name: "cash",
   initialState: {
     entries: [],
-    total: null,
+    total: 0,
     loading: false,
     error: null,
     validationErrors: {},

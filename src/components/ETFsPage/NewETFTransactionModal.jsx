@@ -4,14 +4,18 @@ import toast from "react-hot-toast";
 import { useAuth0 } from "@auth0/auth0-react";
 
 import PopupDialog from "../PopupDialog";
-import NewTickerForm from "./NewTickerForm";
-import { createTrackedETF } from "../../store/slices/etfSlice";
+import NewETFTransactionForm from "./NewETFTransactionForm";
+import { createEtfTransaction } from "../../store/slices/etfSlice";
 
-const NewTickerModal = ({ isOpen, onClose }) => {
+const NewETFTransactionModal = ({ isOpen, onClose }) => {
   const { getAccessTokenSilently } = useAuth0();
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     ticker: "",
+    order_date: "",
+    units: 0,
+    order_price: 0,
+    brokerage: 0,
   });
   const [formErrors, setFormErrors] = useState({});
 
@@ -19,6 +23,34 @@ const NewTickerModal = ({ isOpen, onClose }) => {
     const newErrors = {};
     if (!formData.ticker || formData.ticker.trim() === "") {
       newErrors.ticker = "Ticker is required";
+    }
+
+    if (!formData.order_date || formData.order_date.trim() === "") {
+      newErrors.order_date = "Date is required";
+    }
+
+    if (
+      formData.units === "" ||
+      formData.units === null ||
+      isNaN(formData.units)
+    ) {
+      newErrors.units = "Units required";
+    }
+
+    if (
+      formData.order_price === "" ||
+      formData.order_price === null ||
+      isNaN(formData.order_price)
+    ) {
+      newErrors.order_price = "Order Price is required";
+    }
+
+    if (
+      formData.brokerage === "" ||
+      formData.brokerage === null ||
+      isNaN(formData.brokerage)
+    ) {
+      newErrors.brokerage = "Brokerage fee is required";
     }
     setFormErrors(newErrors);
     return newErrors;
@@ -37,19 +69,26 @@ const NewTickerModal = ({ isOpen, onClose }) => {
 
     // Clear previous errors on new submission attempt
     setFormErrors({});
+
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       return toast.error("Error submitting form");
     }
+
+    // CONTINUE SUBMITTING FORM
+    console.log("Submitting Form", formData);
     try {
       await dispatch(
-        createTrackedETF({
-          data: formData,
-          getAccessTokenSilently,
-        })
+        createEtfTransaction({ data: formData, getAccessTokenSilently })
       ).unwrap();
 
-      setFormData({ ticker: "" });
+      setFormData({
+        ticker: "",
+        order_date: "",
+        units: 0,
+        order_price: 0,
+        brokerage: 0,
+      });
       onClose();
     } catch (rejectedPayload) {
       // Check if the payload is the structured error array from our backend validation
@@ -82,14 +121,20 @@ const NewTickerModal = ({ isOpen, onClose }) => {
   };
 
   const handleCancel = () => {
-    setFormData({ ticker: "" });
+    setFormData({
+      ticker: "",
+      order_date: "",
+      units: 0,
+      order_price: 0,
+      brokerage: 0,
+    });
     setFormErrors({});
     onClose();
   };
 
   return (
     <PopupDialog isOpen={isOpen} onClose={onClose} title="Add New Ticker">
-      <NewTickerForm
+      <NewETFTransactionForm
         formData={formData}
         errors={formErrors}
         handleSubmit={handleSubmit}
@@ -100,4 +145,4 @@ const NewTickerModal = ({ isOpen, onClose }) => {
   );
 };
 
-export default NewTickerModal;
+export default NewETFTransactionModal;

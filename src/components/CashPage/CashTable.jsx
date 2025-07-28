@@ -8,7 +8,7 @@ import { currencies } from "../../constants/currencies";
 
 const CashTable = () => {
   const { getAccessTokenSilently } = useAuth0();
-  const { entries, total, loading, error } = useCashData();
+  const { data: entries = [], total, loading, error } = useCashData();
   const dispatch = useDispatch();
 
   const config = {

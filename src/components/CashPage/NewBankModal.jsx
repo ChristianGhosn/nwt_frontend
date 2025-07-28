@@ -43,10 +43,10 @@ const NewBankModal = ({ isOpen, onClose }) => {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "balance" ? parseFloat(value) : value,
+      [name]: type === "number" ? parseFloat(value) : value,
     }));
   };
 

@@ -19,7 +19,7 @@ const Input = ({
     }
   }, [autofocus]); // Re-run if autofocus prop changes
 
-  if (type === "number" || type === "text") {
+  if (type === "number" || type === "text" || type === "date") {
     return (
       <div>
         {label && <label className="block text-sm font-medium">{label}</label>}

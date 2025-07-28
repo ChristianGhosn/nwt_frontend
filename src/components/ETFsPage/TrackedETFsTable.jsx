@@ -1,15 +1,15 @@
 import Table from "../Table";
-import { currencies } from "../../constants/currencies";
-import { useETFsData } from "../../hooks/useETFsData";
 import { useDispatch } from "react-redux";
+import { useAuth0 } from "@auth0/auth0-react";
+
+import { useTrackedEtfs } from "../../hooks/useTrackedEtfs";
 import {
   deleteTrackedETF,
   updateTrackedETF,
 } from "../../store/slices/etfSlice";
-import { useAuth0 } from "@auth0/auth0-react";
 
-const ETFsTable = () => {
-  const { trackedETFs, loading, error } = useETFsData();
+const TrackedETFsTable = () => {
+  const { data = [], loading, error } = useTrackedEtfs();
   const { getAccessTokenSilently } = useAuth0();
   const dispatch = useDispatch();
   const config = {
@@ -57,7 +57,7 @@ const ETFsTable = () => {
   const handleUpdate = async (id, key, value) => {
     console.log("Updating Table");
     // 1. Get the current object that needs updating
-    const currentItem = trackedETFs.find((item) => item._id === id);
+    const currentItem = data.find((item) => item._id === id);
     if (!currentItem) return;
 
     // 2. Create updated object (only the changed field)
@@ -82,7 +82,7 @@ const ETFsTable = () => {
   const handleDelete = async (id) => {
     console.log("Deleting Table Row");
     // 1. Get the current object that needs deleting
-    const currentItem = trackedETFs.find((item) => item._id === id);
+    const currentItem = data.find((item) => item._id === id);
     if (!currentItem) return;
 
     // 2. Call endpoint to delete in backend
@@ -97,7 +97,7 @@ const ETFsTable = () => {
   return (
     <Table
       {...config}
-      data={trackedETFs}
+      data={data}
       onUpdate={handleUpdate}
       onDelete={handleDelete}
       isLoading={loading}
@@ -105,4 +105,4 @@ const ETFsTable = () => {
   );
 };
 
-export default ETFsTable;
+export default TrackedETFsTable;

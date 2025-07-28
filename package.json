@@ -17,7 +17,6 @@
     "@headlessui/react": "^2.2.4",
     "@reduxjs/toolkit": "^2.8.2",
     "@tailwindcss/vite": "^4.1.11",
-    "appwrite": "^18.1.1",
     "axios": "^1.10.0",
     "lucide-react": "^0.525.0",
     "react": "^19.1.0",
