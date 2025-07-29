@@ -162,6 +162,34 @@ export const createEtfTransaction = createAsyncThunk(
   }
 );
 
+export const deleteEtfTransaction = createAsyncThunk(
+  "etfs/deleteEtfTransaction",
+  async ({ documentId, getAccessTokenSilently }, { rejectWithValue }) => {
+    try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+
+      const res = await apiCallWithToast(
+        axios.delete(`${API_BASE_URL}/transactions/${documentId}`, {
+          headers,
+        }),
+        {
+          loading: "Deleting ETF transaction...",
+          success: "ETF transaction deleted successfully!",
+          error: "Failed to delete ETF transaction",
+        }
+      );
+
+      return res.data;
+    } catch (error) {
+      return handleApiError(
+        error,
+        rejectWithValue,
+        "Failed to delete ETF transaction."
+      );
+    }
+  }
+);
+
 const etfSlice = createSlice({
   name: "etf",
   initialState: {
@@ -169,11 +197,13 @@ const etfSlice = createSlice({
       data: [],
       loading: false,
       error: null,
+      hasFetched: false,
     },
     etfTransactions: {
       data: [],
       loading: false,
       error: null,
+      hasFetched: false,
     },
     validationErrors: {},
   },
@@ -190,9 +220,11 @@ const etfSlice = createSlice({
         state.trackedETFs.error = null;
         state.trackedETFs.data = action.payload.trackedETFs;
         state.validationErrors = {};
+        state.trackedETFs.hasFetched = true;
       })
       .addCase(fetchTrackedETFs.rejected, (state, action) => {
         state.trackedETFs.loading = false;
+        state.trackedETFs.hasFetched = true;
         if (
           action.payload &&
           typeof action.payload === "object" &&
@@ -303,10 +335,12 @@ const etfSlice = createSlice({
         state.etfTransactions.loading = false;
         state.etfTransactions.error = null;
         state.etfTransactions.data = action.payload;
+        state.etfTransactions.hasFetched = true;
         state.validationErrors = {};
       })
       .addCase(fetchEtfTransactions.rejected, (state, action) => {
         state.etfTransactions.loading = false;
+        state.etfTransactions.hasFetched = true;
         if (
           Array.isArray(action.payload) &&
           action.payload.every(
@@ -340,14 +374,74 @@ const etfSlice = createSlice({
       .addCase(createEtfTransaction.fulfilled, (state, action) => {
         state.etfTransactions.loading = false;
         state.etfTransactions.error = null;
-        // push new transaction to data array
-        state.etfTransactions.data.push(action.payload);
+
+        // Add the new ETF transaction to the etfTransactions data array
+        state.etfTransactions.data.push(action.payload.etfTransaction);
+
+        // Update the trackedETFs data array with the latest trackedEtf from the server
+        const updatedTrackedEtf = action.payload.trackedEtf;
+
+        if (updatedTrackedEtf) {
+          const trackedIndex = state.trackedETFs.data.findIndex(
+            (etf) => etf._id === updatedTrackedEtf._id
+          );
+
+          if (trackedIndex !== -1) {
+            // If the tracked ETF already exists, update it
+            state.trackedETFs.data[trackedIndex] = updatedTrackedEtf;
+          } else {
+            // If it's a new tracked ETF (e.g., first purchase of this ticker), add it
+            state.trackedETFs.data.push(updatedTrackedEtf);
+          }
+        }
+
         state.validationErrors = {};
       })
       .addCase(createEtfTransaction.rejected, (state, action) => {
         state.etfTransactions.loading = false;
         state.etfTransactions.error =
           action.payload || "Unknown error occurred.";
+      })
+
+      // --- DELETE ETF TRANSACTION ---
+      .addCase(deleteEtfTransaction.pending, (state) => {
+        state.etfTransactions.loading = true;
+        state.etfTransactions.error = null;
+      })
+      .addCase(deleteEtfTransaction.fulfilled, (state, action) => {
+        state.etfTransactions.loading = false;
+        state.etfTransactions.error = null;
+        state.validationErrors = {};
+
+        const { deletedTransactionId, trackedEtf: updatedTrackedEtf } =
+          action.payload;
+
+        // Remove the deleted transaction from the etfTransactions data array
+        state.etfTransactions.data = state.etfTransactions.data.filter(
+          (txn) => txn._id !== deletedTransactionId
+        );
+
+        // Update the trackedETFs data array with the latest trackedEtf from the server
+        if (updatedTrackedEtf) {
+          const trackedIndex = state.trackedETFs.data.findIndex(
+            (etf) => etf._id === updatedTrackedEtf._id
+          );
+          if (trackedIndex !== -1) {
+            // If the tracked ETF already exists, update it
+            state.trackedETFs.data[trackedIndex] = updatedTrackedEtf;
+          } else {
+            // If it's a new tracked ETF (e.g., first purchase of this ticker), add it
+            // This case should ideally not happen for a delete that results in a new tracked ETF,
+            // but for robustness in case of unexpected backend behavior.
+            state.trackedETFs.data.push(updatedTrackedEtf);
+          }
+        }
+      })
+      .addCase(deleteEtfTransaction.rejected, (state, action) => {
+        state.etfTransactions.loading = false;
+        state.etfTransactions.error =
+          action.payload || "Unknown error occurred.";
+        state.validationErrors = {};
       });
   },
 });

@@ -18,6 +18,7 @@ export const useAuthenticatedFetchSlice = (fetchAction, selector) => {
 
   useEffect(() => {
     if (
+      !sliceData?.hasFetched &&
       !loading &&
       !error &&
       getAccessTokenSilently &&
@@ -29,6 +30,7 @@ export const useAuthenticatedFetchSlice = (fetchAction, selector) => {
     }
   }, [
     dispatch,
+    sliceData?.hasFetched,
     sliceData?.data?.length,
     loading,
     error,

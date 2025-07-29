@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { useAuth0 } from "@auth0/auth0-react";
 
 import { useEtfTransactions } from "../../hooks/useEtfTransactions";
+import { deleteEtfTransaction } from "../../store/slices/etfSlice";
 
 const ETFTransactionsTable = () => {
   const { getAccessTokenSilently } = useAuth0();
@@ -44,21 +45,22 @@ const ETFTransactionsTable = () => {
       capital_gains_$: "currency",
       "capital_gains_%": "percentage",
     },
-    editableColumns: {
-      order_date: { type: "date" },
-      units: { type: "number" },
-      order_price: { type: "number" },
-      brokerage: { type: "number" },
-    },
     deletableRows: true,
   };
 
   const handleUpdate = async (id, key, value) => {
-    console.log("Handling Update...");
+    console.log("Handle Update not implemented...");
   };
 
   const handleDelete = async (id) => {
     console.log("Handling Delete...");
+    // 1. Get the current object that need deleting
+    const currentItem = data.find((item) => item._id === id);
+
+    // 2. Call endpoint to delete in backend
+    await dispatch(
+      deleteEtfTransaction({ documentId: id, getAccessTokenSilently })
+    ).unwrap();
   };
 
   return (

@@ -75,8 +75,6 @@ const NewETFTransactionModal = ({ isOpen, onClose }) => {
       return toast.error("Error submitting form");
     }
 
-    // CONTINUE SUBMITTING FORM
-    console.log("Submitting Form", formData);
     try {
       await dispatch(
         createEtfTransaction({ data: formData, getAccessTokenSilently })

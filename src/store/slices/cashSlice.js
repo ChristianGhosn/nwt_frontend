@@ -227,6 +227,7 @@ const cashSlice = createSlice({
     entries: [],
     total: 0,
     loading: false,
+    hasFetched: false,
     error: null,
     validationErrors: {},
   },
@@ -239,6 +240,7 @@ const cashSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchCashData.fulfilled, (state, action) => {
+        state.hasFetched = true;
         const updatedItem = action.payload;
         if (!state.entries || !Array.isArray(state.entries)) return;
 
@@ -266,6 +268,7 @@ const cashSlice = createSlice({
       })
       .addCase(fetchCashData.rejected, (state, action) => {
         state.loading = false;
+        state.hasFetched = true;
         state.error =
           typeof action.payload === "string"
             ? action.payload
