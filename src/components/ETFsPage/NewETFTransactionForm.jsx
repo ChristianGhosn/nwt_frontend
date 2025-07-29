@@ -55,7 +55,7 @@ const NewETFTransactionForm = ({
         <Button type="button" onClick={handleCancel}>
           Cancel
         </Button>
-        <Button type="submit">Add Ticker</Button>
+        <Button type="submit">Add Transaction</Button>
       </div>
     </form>
   );

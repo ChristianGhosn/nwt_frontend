@@ -6,11 +6,14 @@ import { useAuth0 } from "@auth0/auth0-react";
 import PopupDialog from "../PopupDialog";
 import NewETFTransactionForm from "./NewETFTransactionForm";
 import { createEtfTransaction } from "../../store/slices/etfSlice";
+import BuySellSwitch from "../BuySellSwitch";
 
 const NewETFTransactionModal = ({ isOpen, onClose }) => {
   const { getAccessTokenSilently } = useAuth0();
   const dispatch = useDispatch();
+  const [action, setAction] = useState(true);
   const [formData, setFormData] = useState({
+    action: "buy",
     ticker: "",
     order_date: "",
     units: 0,
@@ -18,6 +21,14 @@ const NewETFTransactionModal = ({ isOpen, onClose }) => {
     brokerage: 0,
   });
   const [formErrors, setFormErrors] = useState({});
+
+  const handleSwitchChange = (newActionValue) => {
+    setAction(newActionValue); // Update the local 'action' state
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      action: newActionValue ? "buy" : "sell", // Update 'action' in formData
+    }));
+  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -66,6 +77,7 @@ const NewETFTransactionModal = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(formData);
 
     // Clear previous errors on new submission attempt
     setFormErrors({});
@@ -131,7 +143,10 @@ const NewETFTransactionModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <PopupDialog isOpen={isOpen} onClose={onClose} title="Add New Ticker">
+    <PopupDialog isOpen={isOpen} onClose={onClose} title="Add Transaction">
+      <div className="flex justify-center items-center mt-2">
+        <BuySellSwitch action={action} setAction={handleSwitchChange} />
+      </div>
       <NewETFTransactionForm
         formData={formData}
         errors={formErrors}
