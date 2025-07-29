@@ -12,6 +12,7 @@ const ETFTransactionsTable = () => {
   const config = {
     tableHeading: "ETF Transactions",
     headings: [
+      "Action",
       "Ticker",
       "Order Date",
       "Units",
@@ -24,6 +25,7 @@ const ETFTransactionsTable = () => {
       "Capital Gain (%)",
     ],
     keys: [
+      "action",
       "ticker",
       "order_date",
       "units",

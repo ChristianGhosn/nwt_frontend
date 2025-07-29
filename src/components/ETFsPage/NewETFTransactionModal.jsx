@@ -48,6 +48,10 @@ const NewETFTransactionModal = ({ isOpen, onClose }) => {
       newErrors.units = "Units required";
     }
 
+    if (formData.units <= 0) {
+      newErrors.units = "Units must be greater than 0.";
+    }
+
     if (
       formData.order_price === "" ||
       formData.order_price === null ||
@@ -93,6 +97,7 @@ const NewETFTransactionModal = ({ isOpen, onClose }) => {
       ).unwrap();
 
       setFormData({
+        action: "buy",
         ticker: "",
         order_date: "",
         units: 0,
@@ -132,6 +137,7 @@ const NewETFTransactionModal = ({ isOpen, onClose }) => {
 
   const handleCancel = () => {
     setFormData({
+      action: "buy",
       ticker: "",
       order_date: "",
       units: 0,
