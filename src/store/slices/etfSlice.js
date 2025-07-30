@@ -151,6 +151,8 @@ export const createEtfTransaction = createAsyncThunk(
         }
       );
 
+      console.log(res.data);
+
       return res.data;
     } catch (error) {
       return handleApiError(
@@ -375,8 +377,23 @@ const etfSlice = createSlice({
         state.etfTransactions.loading = false;
         state.etfTransactions.error = null;
 
-        // Add the new ETF transaction to the etfTransactions data array
-        state.etfTransactions.data.push(action.payload.etfTransaction);
+        const newTransactions = action.payload.transactions;
+
+        if (Array.isArray(newTransactions)) {
+          newTransactions.forEach((newTx) => {
+            const existingIndex = state.etfTransactions.data.findIndex(
+              (tx) => tx._id === newTx._id
+            );
+
+            if (existingIndex !== -1) {
+              // Update existing transaction
+              state.etfTransactions.data[existingIndex] = newTx;
+            } else {
+              // Add new transaction
+              state.etfTransactions.data.push(newTx);
+            }
+          });
+        }
 
         // Update the trackedETFs data array with the latest trackedEtf from the server
         const updatedTrackedEtf = action.payload.trackedEtf;
