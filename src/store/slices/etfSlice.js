@@ -430,8 +430,11 @@ const etfSlice = createSlice({
         state.etfTransactions.error = null;
         state.validationErrors = {};
 
-        const { deletedTransactionId, trackedEtf: updatedTrackedEtf } =
-          action.payload;
+        const {
+          deletedTransactionId,
+          trackedEtf: updatedTrackedEtf,
+          updatedEtfTransactions = [],
+        } = action.payload;
 
         // Remove the deleted transaction from the etfTransactions data array
         state.etfTransactions.data = state.etfTransactions.data.filter(
@@ -444,15 +447,23 @@ const etfSlice = createSlice({
             (etf) => etf._id === updatedTrackedEtf._id
           );
           if (trackedIndex !== -1) {
-            // If the tracked ETF already exists, update it
             state.trackedETFs.data[trackedIndex] = updatedTrackedEtf;
           } else {
-            // If it's a new tracked ETF (e.g., first purchase of this ticker), add it
-            // This case should ideally not happen for a delete that results in a new tracked ETF,
-            // but for robustness in case of unexpected backend behavior.
             state.trackedETFs.data.push(updatedTrackedEtf);
           }
         }
+
+        //Update any changed transactions (usually the linked buys of a deleted sell)
+        updatedEtfTransactions.forEach((updatedTxn) => {
+          const txnIndex = state.etfTransactions.data.findIndex(
+            (txn) => txn._id === updatedTxn._id
+          );
+          if (txnIndex !== -1) {
+            state.etfTransactions.data[txnIndex] = updatedTxn;
+          } else {
+            state.etfTransactions.data.push(updatedTxn); // For robustness
+          }
+        });
       })
       .addCase(deleteEtfTransaction.rejected, (state, action) => {
         state.etfTransactions.loading = false;

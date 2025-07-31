@@ -22,25 +22,31 @@ const Table = ({
     setData(initialData);
   }, [initialData]);
 
-  if (isLoading) {
-    return <Loader />;
-  }
-
   return (
     <div className="mt-4 overflow-x-auto w-full">
       <h2 className="text-lg font-semibold mb-2">{tableHeading}</h2>
 
       <table className="w-full text-left text-sm rounded-md shadow-sm">
         <TableHeadings headings={headings} />
-        <TableBody
-          data={data}
-          keys={keys}
-          columnFormats={columnFormats}
-          onUpdate={onUpdate}
-          onDelete={onDelete}
-          editableColumns={editableColumns}
-          deletableRows={deletableRows}
-        />
+        {isLoading ? (
+          <tbody>
+            <tr>
+              <td colSpan={headings.length}>
+                <Loader />
+              </td>
+            </tr>
+          </tbody>
+        ) : (
+          <TableBody
+            data={data}
+            keys={keys}
+            columnFormats={columnFormats}
+            onUpdate={onUpdate}
+            onDelete={onDelete}
+            editableColumns={editableColumns}
+            deletableRows={deletableRows}
+          />
+        )}
       </table>
     </div>
   );

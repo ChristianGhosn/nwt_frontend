@@ -17,7 +17,7 @@ const ETFs = () => {
   return (
     <div className="w-full">
       <h1 className="text-3xl font-semibold">Exchange Traded Funds</h1>
-      <div className="flex justify-end">
+      <div className="flex justify-end mt-4">
         <Button onClick={openTickerModal}>
           <CirclePlus size={24} strokeWidth={1.75} />
           Track ETF

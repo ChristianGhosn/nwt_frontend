@@ -15,9 +15,9 @@ const NewETFTransactionModal = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
     action: "buy",
     ticker: "",
-    order_date: "",
+    orderDate: "",
     units: 0,
-    order_price: 0,
+    orderPrice: 0,
     brokerage: 0,
   });
   const [formErrors, setFormErrors] = useState({});
@@ -36,8 +36,8 @@ const NewETFTransactionModal = ({ isOpen, onClose }) => {
       newErrors.ticker = "Ticker is required";
     }
 
-    if (!formData.order_date || formData.order_date.trim() === "") {
-      newErrors.order_date = "Date is required";
+    if (!formData.orderDate || formData.orderDate.trim() === "") {
+      newErrors.orderDate = "Date is required";
     }
 
     if (
@@ -53,11 +53,11 @@ const NewETFTransactionModal = ({ isOpen, onClose }) => {
     }
 
     if (
-      formData.order_price === "" ||
-      formData.order_price === null ||
-      isNaN(formData.order_price)
+      formData.orderPrice === "" ||
+      formData.orderPrice === null ||
+      isNaN(formData.orderPrice)
     ) {
-      newErrors.order_price = "Order Price is required";
+      newErrors.orderPrice = "Order Price is required";
     }
 
     if (
@@ -81,7 +81,6 @@ const NewETFTransactionModal = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
 
     // Clear previous errors on new submission attempt
     setFormErrors({});
@@ -99,9 +98,9 @@ const NewETFTransactionModal = ({ isOpen, onClose }) => {
       setFormData({
         action: "buy",
         ticker: "",
-        order_date: "",
+        orderDate: "",
         units: 0,
-        order_price: 0,
+        orderPrice: 0,
         brokerage: 0,
       });
       onClose();
@@ -139,9 +138,9 @@ const NewETFTransactionModal = ({ isOpen, onClose }) => {
     setFormData({
       action: "buy",
       ticker: "",
-      order_date: "",
+      orderDate: "",
       units: 0,
-      order_price: 0,
+      orderPrice: 0,
       brokerage: 0,
     });
     setFormErrors({});

@@ -22,10 +22,10 @@ const NewETFTransactionForm = ({
       <Input
         type="date"
         label="Order Date"
-        name="order_date"
-        value={formData.order_date}
+        name="orderDate"
+        value={formData.orderDate}
         onChange={handleChange}
-        error={errors.order_date}
+        error={errors.orderDate}
       />
       <Input
         type="number"
@@ -38,10 +38,10 @@ const NewETFTransactionForm = ({
       <Input
         type="number"
         label="Order Price"
-        name="order_price"
-        value={formData.order_price}
+        name="orderPrice"
+        value={formData.orderPrice}
         onChange={handleChange}
-        error={errors.order_price}
+        error={errors.orderPrice}
       />
       <Input
         type="number"
