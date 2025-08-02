@@ -6,6 +6,8 @@ import { useAuth0 } from "@auth0/auth0-react";
 import PopupDialog from "../PopupDialog";
 import NewTickerForm from "./NewTickerForm";
 import { createTrackedETF } from "../../store/slices/etfSlice";
+import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
+import { Info } from "lucide-react";
 
 const NewTickerModal = ({ isOpen, onClose }) => {
   const { getAccessTokenSilently } = useAuth0();
@@ -89,6 +91,17 @@ const NewTickerModal = ({ isOpen, onClose }) => {
 
   return (
     <PopupDialog isOpen={isOpen} onClose={onClose} title="Add New Ticker">
+      <Popover className="relative">
+        <PopoverButton>
+          <Info size={16} strokeWidth={1} />
+        </PopoverButton>
+        <PopoverPanel
+          anchor="right"
+          className="flex w-48 rounded bg-gray-200 shadow-xl p-4 text-sm/6 transition duration-200 ease-in-out [--anchor-gap:--spacing(1)] data-closed:-translate-y-1 data-closed:opacity-0"
+        >
+          <p>Ticker must match ticker found in Yahoo Finance</p>
+        </PopoverPanel>
+      </Popover>
       <NewTickerForm
         formData={formData}
         errors={formErrors}

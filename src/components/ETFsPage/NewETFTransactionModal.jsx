@@ -104,6 +104,7 @@ const NewETFTransactionModal = ({ isOpen, onClose }) => {
         brokerage: 0,
       });
       onClose();
+      setAction(true);
     } catch (rejectedPayload) {
       // Check if the payload is the structured error array from our backend validation
       if (
@@ -143,8 +144,9 @@ const NewETFTransactionModal = ({ isOpen, onClose }) => {
       orderPrice: 0,
       brokerage: 0,
     });
-    setFormErrors({});
     onClose();
+    setAction(true);
+    setFormErrors({});
   };
 
   return (

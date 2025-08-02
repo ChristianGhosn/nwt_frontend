@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import toast from "react-hot-toast";
 import axios from "axios";
 import { handleApiError } from "../../constants/handleApiError";
+import { getAuthHeaders } from "../../utils/getAuthHeaders";
+import { apiCallWithToast } from "../../utils/apiCallWithToast";
 
 const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/cash`;
 
@@ -9,25 +10,8 @@ export const fetchCashData = createAsyncThunk(
   "cash/fetchCashData",
   async (getAccessTokenSilently, { rejectWithValue }) => {
     try {
-      if (
-        !getAccessTokenSilently ||
-        typeof getAccessTokenSilently !== "function"
-      ) {
-        throw new Error(
-          "Authentication function (getAccessTokenSilently) not provided to fetchCashData."
-        );
-      }
-
-      const token = await getAccessTokenSilently({
-        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-      });
-
-      const response = await axios.get(API_BASE_URL, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await axios.get(API_BASE_URL, { headers });
       const backendResponse = response.data;
 
       // 1. Validate the structure expected from the backend
@@ -36,35 +20,24 @@ export const fetchCashData = createAsyncThunk(
         !Array.isArray(backendResponse.entries) ||
         !backendResponse.total
       ) {
-        console.error(
-          "Unexpected backend response format for fetchCashData:",
-          backendResponse
-        );
         return rejectWithValue(
-          "Received invalid data format from backend. Expected 'entries' array and 'total' object."
+          "Received invalid data format from backend. Expected 'entries' list and 'total' object."
         );
       }
 
-      // 2. Directly use the data provided by the backend
-      const cashEntries = backendResponse.entries;
-      const totalSummary = backendResponse.total; // Use the total object from backend
-
       return {
-        entries: cashEntries,
-        total: totalSummary,
+        entries: backendResponse.entries,
+        total: backendResponse.total,
       };
     } catch (error) {
       // Catch specific error from authentication function check
-      if (
-        error instanceof Error &&
-        error.message.includes("Authentication function")
-      ) {
+      if (error.message.includes("Authentication function")) {
         return rejectWithValue(error.message);
       }
       return handleApiError(
         error,
         rejectWithValue,
-        "Failed to fetch cash data"
+        "Failed to fetch cash account data"
       );
     }
   }
@@ -75,35 +48,14 @@ export const createCashData = createAsyncThunk(
   // Pass both the data to create and getAccessTokenSilently
   async ({ data, getAccessTokenSilently }, { rejectWithValue }) => {
     try {
-      if (
-        !getAccessTokenSilently ||
-        typeof getAccessTokenSilently !== "function"
-      ) {
-        throw new Error(
-          "Authentication function (getAccessTokenSilently) not provided to createCashData."
-        );
-      }
+      const headers = await getAuthHeaders(getAccessTokenSilently);
 
-      const token = await getAccessTokenSilently({
-        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-      });
-
-      const res = await toast.promise(
-        axios.post(API_BASE_URL, data, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }),
+      const res = await apiCallWithToast(
+        axios.post(API_BASE_URL, data, { headers }),
         {
-          loading: "Creating bank account...",
-          success: "New Bank Account created successfully!",
-          error: "Failed to create bank account",
-        },
-        {
-          style: {
-            minWidth: "250px",
-          },
+          loading: "Creating cash account...",
+          success: "New cash account created successfully!",
+          error: "Failed to create cash account",
         }
       );
 
@@ -113,7 +65,7 @@ export const createCashData = createAsyncThunk(
       return handleApiError(
         error,
         rejectWithValue,
-        "Failed to create bank account"
+        "Failed to create cash account"
       );
     }
   }
@@ -123,48 +75,26 @@ export const updateCashData = createAsyncThunk(
   "cash/updateCashData",
   async ({ data, documentId, getAccessTokenSilently }, { rejectWithValue }) => {
     try {
-      if (
-        !getAccessTokenSilently ||
-        typeof getAccessTokenSilently !== "function"
-      ) {
-        throw new Error(
-          "Authentication function (getAccessTokenSilently) not provided to updateCashData."
-        );
-      }
+      const headers = await getAuthHeaders(getAccessTokenSilently);
 
-      const token = await getAccessTokenSilently({
-        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-      });
-
-      const res = await toast.promise(
+      const res = await apiCallWithToast(
         // toast.promise handles showing success/error messages
         axios.put(`${API_BASE_URL}/${documentId}`, data, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+          headers,
         }),
         {
-          loading: "Updating bank account...",
-          success: "Bank Account updated successfully!",
-          error: "Failed to update bank account", // <--- This is the generic toast for any error
-        },
-        {
-          style: {
-            minWidth: "250px",
-          },
+          loading: "Updating cash account...",
+          success: "Cash Account updated successfully!",
+          error: "Failed to update cash account",
         }
       );
 
       return res.data; // Assuming your backend PUT /api/cash/:id returns the updated item
     } catch (error) {
-      // handleApiError will now return either the structured errors array (for 400)
-      // or a generic message string. toast.promise handles the message.
-      // We don't need to explicitly return the structured errors to the Redux state for update.
       return handleApiError(
         error,
         rejectWithValue,
-        "Failed to update bank account"
+        "Failed to update cash account"
       );
     }
   }
@@ -175,47 +105,23 @@ export const deleteCashData = createAsyncThunk(
   // Pass documentId and getAccessTokenSilently
   async ({ documentId, getAccessTokenSilently }, { rejectWithValue }) => {
     try {
-      if (
-        !getAccessTokenSilently ||
-        typeof getAccessTokenSilently !== "function"
-      ) {
-        throw new Error(
-          "Authentication function (getAccessTokenSilently) not provided to deleteCashData."
-        );
-      }
+      const headers = await getAuthHeaders(getAccessTokenSilently);
 
-      const token = await getAccessTokenSilently({
-        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-      });
-
-      const res = await toast.promise(
-        axios.delete(
-          `${API_BASE_URL}/${documentId}`, // DELETE request to specific ID
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        ),
+      const res = await apiCallWithToast(
+        axios.delete(`${API_BASE_URL}/${documentId}`, { headers }),
         {
-          loading: "Deleting bank account...",
-          success: "Bank Account deleted successfully!",
-          error: "Failed to delete bank account",
-        },
-        {
-          style: {
-            minWidth: "250px",
-          },
+          loading: "Deleting cash account...",
+          success: "cash account deleted successfully!",
+          error: "Failed to delete cash account",
         }
       );
 
-      // If the deletion was successful, return the documentId so the reducer can remove it from state
       return documentId;
     } catch (error) {
       return handleApiError(
         error,
         rejectWithValue,
-        "Failed to delete bank account"
+        "Failed to delete cash account"
       );
     }
   }

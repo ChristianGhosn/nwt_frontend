@@ -32,7 +32,7 @@ const TrackedETFsTable = () => {
       "currency",
       "livePrice",
       "heldUnits",
-      "live_value",
+      "liveValue",
       "avgPrice",
       "currentAllocation",
       "targetAllocation",
@@ -41,7 +41,7 @@ const TrackedETFsTable = () => {
     columnFormats: {
       heldUnits: "number",
       livePrice: "currency",
-      live_value: "currency",
+      liveValue: "currency",
       avgPrice: "currency",
       targetAllocation: "percentage",
       currentAllocation: "percentage",

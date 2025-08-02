@@ -9,7 +9,7 @@ const NewTickerForm = ({
   handleCancel,
 }) => {
   return (
-    <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+    <form onSubmit={handleSubmit} className=" space-y-4">
       <Input
         autofocus={true}
         type="text"

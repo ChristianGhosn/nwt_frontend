@@ -15,7 +15,7 @@ export const fetchTrackedETFs = createAsyncThunk(
 
       if (!Array.isArray(response.data)) {
         return rejectWithValue(
-          "Received invalid data format from backend. Expected an array of ETFs."
+          "Received invalid data format from backend. Expected a list of tracked ETFs."
         );
       }
       return { trackedETFs: response.data };
@@ -112,7 +112,6 @@ export const fetchEtfTransactions = createAsyncThunk(
   async (getAccessTokenSilently, { rejectWithValue }) => {
     try {
       const headers = await getAuthHeaders(getAccessTokenSilently);
-
       const response = await axios.get(`${API_BASE_URL}/transactions`, {
         headers,
       });
@@ -139,7 +138,6 @@ export const createEtfTransaction = createAsyncThunk(
   async ({ data, getAccessTokenSilently }, { rejectWithValue }) => {
     try {
       const headers = await getAuthHeaders(getAccessTokenSilently);
-
       const res = await apiCallWithToast(
         axios.post(`${API_BASE_URL}/transactions`, data, {
           headers,
@@ -150,8 +148,6 @@ export const createEtfTransaction = createAsyncThunk(
           error: "Failed to create ETF transaction",
         }
       );
-
-      console.log(res.data);
 
       return res.data;
     } catch (error) {
@@ -169,7 +165,6 @@ export const deleteEtfTransaction = createAsyncThunk(
   async ({ documentId, getAccessTokenSilently }, { rejectWithValue }) => {
     try {
       const headers = await getAuthHeaders(getAccessTokenSilently);
-
       const res = await apiCallWithToast(
         axios.delete(`${API_BASE_URL}/transactions/${documentId}`, {
           headers,
