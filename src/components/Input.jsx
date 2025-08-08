@@ -1,6 +1,8 @@
+import { Field, Label, Input, Description, Select } from "@headlessui/react";
 import { useRef, useEffect } from "react";
+import clsx from "clsx";
 
-const Input = ({
+const InputField = ({
   label = false,
   options = [],
   autofocus = false,
@@ -12,6 +14,14 @@ const Input = ({
 }) => {
   const inputRef = useRef(null);
 
+  const labelClass = "block text-sm font-medium mb-1";
+  const errorClass = "mt-1 text-sm text-red-500";
+  const inputClass = clsx(
+    "block w-full rounded-lg border bg-white/5 px-3 py-1.5 text-sm/6",
+    "focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-gray-600",
+    error ? "border-red-500" : "border-gray-300"
+  );
+
   // Use useEffect to focus the element after it mounts
   useEffect(() => {
     if (autofocus && inputRef.current) {
@@ -21,9 +31,9 @@ const Input = ({
 
   if (type === "number" || type === "text" || type === "date") {
     return (
-      <div>
-        {label && <label className="block text-sm font-medium">{label}</label>}
-        <input
+      <Field>
+        {label && <Label className={labelClass}>{label}</Label>}
+        <Input
           ref={inputRef}
           type={type}
           name={name}
@@ -35,39 +45,37 @@ const Input = ({
               : value
           }
           onChange={onChange}
-          className={`w-full rounded-lg border px-3 py-2 ${
-            error ? "border-red-500" : "border-gray-300"
-          }`}
+          className={inputClass}
         />
-        {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
-      </div>
+        {error && <Description className={errorClass}>{error}</Description>}
+      </Field>
     );
   }
 
   if (type === "select") {
     return (
-      <div>
-        {label && <label className="block text-sm font-medium">{label}</label>}
-        <select
+      <Field>
+        {label && <Label className={labelClass}>{label}</Label>}
+        <Select
           ref={inputRef}
           name={name}
           value={value}
           onChange={onChange}
-          className={`w-full rounded-lg border px-3 py-2 ${
-            error ? "border-red-500" : "border-gray-300"
-          }`}
-          {...(autofocus ? { autoFocus: true } : {})}
+          className={inputClass}
         >
-          {options.map((option) => (
-            <option key={option} value={option}>
-              {option}
+          <option value="" disabled hidden>
+            --- Select ---
+          </option>
+          {options.map((option, index) => (
+            <option key={index} value={option._id}>
+              {option.name}
             </option>
           ))}
-        </select>
-        {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
-      </div>
+        </Select>
+        {error && <Description className={errorClass}>{error}</Description>}
+      </Field>
     );
   }
 };
 
-export default Input;
+export default InputField;

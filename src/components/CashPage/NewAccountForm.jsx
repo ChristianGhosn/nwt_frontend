@@ -1,6 +1,6 @@
 import { currencies } from "../../constants/currencies";
 import Button from "../Button";
-import Input from "../Input";
+import InputField from "../Input";
 
 const NewAccountForm = ({
   formData,
@@ -11,7 +11,7 @@ const NewAccountForm = ({
 }) => {
   return (
     <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-      <Input
+      <InputField
         autofocus={true}
         type="text"
         label="Bank"
@@ -20,7 +20,7 @@ const NewAccountForm = ({
         onChange={handleChange}
         error={errors.bank}
       />
-      <Input
+      <InputField
         type="number"
         label="Balance"
         name="balance"
@@ -28,7 +28,7 @@ const NewAccountForm = ({
         onChange={handleChange}
         error={errors.balance}
       />
-      <Input
+      <InputField
         type="select"
         label="Currency"
         name="currency"

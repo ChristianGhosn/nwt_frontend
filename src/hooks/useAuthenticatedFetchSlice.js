@@ -21,21 +21,11 @@ export const useAuthenticatedFetchSlice = (fetchAction, selector) => {
       !sliceData?.hasFetched &&
       !loading &&
       !error &&
-      getAccessTokenSilently &&
-      (Array.isArray(sliceData?.data)
-        ? sliceData.data.length === 0
-        : !sliceData?.data)
+      getAccessTokenSilently
     ) {
       dispatch(fetchAction(getAccessTokenSilently));
     }
-  }, [
-    dispatch,
-    sliceData?.hasFetched,
-    sliceData?.data?.length,
-    loading,
-    error,
-    getAccessTokenSilently,
-  ]);
+  }, [dispatch, sliceData?.hasFetched, loading, error, getAccessTokenSilently]);
 
   return sliceData;
 };
