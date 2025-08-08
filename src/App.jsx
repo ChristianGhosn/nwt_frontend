@@ -7,6 +7,7 @@ import NotFound from "./pages/NotFound";
 import Cash from "./pages/Cash";
 import ETFs from "./pages/ETFs";
 import Budget from "./pages/Budget";
+import Settings from "./pages/Settings";
 
 function App() {
   return (
@@ -24,7 +25,7 @@ function App() {
           <Route path="fire" element={<Construction />} />
           <Route path="super" element={<Construction />} />
           <Route path="budget" element={<Budget />} />
-          <Route path="settings" element={<Construction />} />
+          <Route path="settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         {/* Add more routes as needed */}

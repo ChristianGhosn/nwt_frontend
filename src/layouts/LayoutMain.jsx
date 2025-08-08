@@ -103,7 +103,7 @@ const LayoutMain = () => {
     <>
       {/* Sidebar Overlay for Mobile */}
       <div
-        className={`fixed inset-0 z-20 bg-black/50 transition-opacity md:hidden ${
+        className={`fixed inset-0 z-20 bg-black/50 transition-opacity lg:hidden ${
           sidebarOpen ? "block" : "hidden"
         }`}
         onClick={() => setSidebarOpen(false)} // Clicking outside closes sidebar
@@ -115,18 +115,18 @@ const LayoutMain = () => {
     fixed top-0 left-0 z-50 h-dvh bg-gray-800 text-white flex flex-col transition-transform
     w-[256px]
     ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} 
-    md:translate-x-0 md:fixed md:block
+    lg:translate-x-0 lg:fixed lg:block
   `}
       >
         <div className="w-full h-full bg-gray-800 text-white flex flex-col px-4">
           {/* Logo on md and up */}
-          <div className="hidden md:flex items-center justify-center mt-6 mb-4">
+          <div className="hidden lg:flex items-center justify-center mt-6 mb-4">
             <img src={logo} alt="App Logo" className="h-10 w-10 mr-2" />
             <span className="text-xl font-bold">Plexus</span>
           </div>
 
           {/* Close button on mobile */}
-          <div className="flex justify-between items-center mt-4 md:hidden">
+          <div className="flex justify-between items-center mt-4 lg:hidden">
             <div className="text-xl font-bold">Plexus</div>
             <button
               className="text-white text-2xl"
@@ -168,11 +168,11 @@ const LayoutMain = () => {
       </nav>
 
       {/* Fixed Header */}
-      <header className="fixed top-0 left-0 md:left-[256px] right-0 z-10 px-6 py-2 border-b border-gray-200 transition-colors duration-300 bg-white dark:bg-gray-900 dark:text-gray-100 dark:border-white">
-        <div className="flex items-center justify-between md:justify-end">
+      <header className="fixed top-0 left-0 lg:left-[256px] right-0 z-10 px-6 py-2 border-b border-gray-200 transition-colors duration-300 bg-white dark:bg-gray-900 dark:text-gray-100 dark:border-white">
+        <div className="flex items-center justify-between lg:justify-end">
           <HamburgerMenu
             strokeWidth={1.5}
-            className="md:hidden cursor-pointer"
+            className="lg:hidden cursor-pointer"
             onClick={() => setSidebarOpen(true)}
           />
           <div className="flex items-center justify-center gap-2">
@@ -240,7 +240,7 @@ const LayoutMain = () => {
       </header>
 
       {/* Main Content */}
-      <main className="pt-[74px] h-screen overflow-auto p-6 transition-colors duration-300 bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 md:ml-[256px]">
+      <main className="pt-[74px] h-screen overflow-auto p-6 transition-colors duration-300 bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 lg:ml-[256px]">
         <Outlet />
       </main>
     </>
